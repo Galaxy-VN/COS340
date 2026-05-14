@@ -3,13 +3,13 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Danh sách sản phẩm</h4>
-                    <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary">Thêm sản phẩm</a>
-                </div>
-                <div class="card-body">
+<div class="col-md-12 col-lg-10">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Danh sách sản phẩm</h4>
+                        <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary">Thêm sản phẩm</a>
+                    </div>
+                    <div class="card-body px-4">
                     <?php if (empty($products)): ?>
                         <div class="alert alert-info mb-0">
                             Chưa có sản phẩm nào. <a href="/phamgiahuy/Product/add" class="alert-link">Thêm sản phẩm mới</a>

@@ -19,11 +19,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/phamgiahuy/Product/list">Danh sách</a>
+                <li class="nav-item me-2">
+                    <a class="btn btn-light" href="/phamgiahuy/Product/list">Danh sách</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/phamgiahuy/Product/add">Thêm mới</a>
+                    <a class="btn btn-light" href="/phamgiahuy/Product/add">Thêm mới</a>
                 </li>
             </ul>
         </div>
