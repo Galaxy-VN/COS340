@@ -27,7 +27,7 @@ class ProductController
 
     public function add()
     {
-        $error = [];
+        $errors = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $_POST['name'];
