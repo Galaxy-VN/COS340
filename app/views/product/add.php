@@ -8,7 +8,7 @@
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">Thêm sản phẩm mới</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body px-4">
                     <?php if (!empty($errors)): ?>
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -19,7 +19,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="/phamgiahuy/Product/add" method="POST">
+                    <form action="/phamgiahuy/Product/add" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" placeholder="Nhập tên sản phẩm" required>
@@ -33,6 +33,12 @@
                         <div class="mb-3">
                             <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($_POST['price'] ?? ''); ?>" placeholder="Nhập giá sản phẩm" step="0.01" min="0.01" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Hình ảnh <span class="text-secondary">(optional)</span></label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <div class="form-text">Chấp nhận JPG, JPEG, PNG, GIF, WEBP — tối đa 5MB.</div>
                         </div>
 
                         <div class="d-flex gap-2">

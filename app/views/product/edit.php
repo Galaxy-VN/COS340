@@ -8,8 +8,8 @@
                 <div class="card-header bg-warning text-white">
                     <h4 class="mb-0">Chỉnh sửa sản phẩm</h4>
                 </div>
-                <div class="card-body">
-                    <form action="/phamgiahuy/Product/edit/<?php echo htmlspecialchars($product->getID()); ?>" method="POST">
+                <div class="card-body px-4">
+                    <form action="/phamgiahuy/Product/edit/<?php echo htmlspecialchars($product->getID()); ?>" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($product->getName()); ?>" placeholder="Nhập tên sản phẩm" required>
@@ -23,6 +23,21 @@
                         <div class="mb-3">
                             <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($product->getPricen()); ?>" placeholder="Nhập giá sản phẩm" step="0.01" min="0.01" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ảnh hiện tại</label><br>
+                            <?php if ($product->getImage()): ?>
+                                <img src="/phamgiahuy/<?php echo htmlspecialchars($product->getImage()); ?>" alt="Ảnh sản phẩm" class="img-thumbnail mb-2" style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php else: ?>
+                                <p class="text-muted">Không có ảnh</p>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Thay đổi ảnh <span class="text-secondary">(optional)</span></label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <div class="form-text">Chọn ảnh mới để thay thế. Chấp nhận JPG, JPEG, PNG, GIF, WEBP — tối đa 5MB.</div>
                         </div>
 
                         <div class="d-flex gap-2">

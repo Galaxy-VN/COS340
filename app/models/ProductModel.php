@@ -6,25 +6,26 @@ class ProductModel
     private $Name;
     private $Description;
     private $Price;
+    private $Image;
 
-    public function __construct($ID, $Name, $Description, $Price)
+    public function __construct($ID, $Name, $Description, $Price, $Image = '')
     {
         $this->ID = $ID;
         $this->Name = $Name;
         $this->Description = $Description;
         $this->Price = $Price;
+        $this->Image = $Image;
     }
 
     public function getID()
     {
-        return $this->ID;    
+        return $this->ID;
     }
 
     public function setID($ID)
     {
         $this->ID = $ID;
     }
-
 
     public function getName()
     {
@@ -54,5 +55,15 @@ class ProductModel
     public function setPrice($Price)
     {
         $this->Price = $Price;
+    }
+
+    public function getImage()
+    {
+        return $this->Image;
+    }
+
+    public function setImage($Image)
+    {
+        $this->Image = $Image;
     }
 }
