@@ -66,9 +66,31 @@ class CategoryModel
 
     public function deleteCategory($id)
     {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        try {
+            $this->conn->beginTransaction();
+
+            $updateProducts = "UPDATE product SET category_id = NULL WHERE category_id = :id";
+            $updateStmt = $this->conn->prepare($updateProducts);
+            $updateStmt->bindParam(':id', $id);
+            $updateStmt->execute();
+
+            $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $result = $stmt->execute();
+
+            if ($result) {
+                $this->conn->commit();
+                return true;
+            }
+
+            $this->conn->rollBack();
+            return false;
+        } catch (PDOException $exception) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            return false;
+        }
     }
 }

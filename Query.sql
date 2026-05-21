@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS product (
 	price DECIMAL(10,2) NOT NULL, 
 	image VARCHAR(255) DEFAULT '',
 	category_id INT,
-	FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+	FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );
 
 INSERT INTO category (name, description) VALUES
