@@ -2,68 +2,135 @@
 
 class ProductModel
 {
-    private $ID;
-    private $Name;
-    private $Description;
-    private $Price;
-    private $Image;
+    private $conn;
+    private $table_name = "product";
 
-    public function __construct($ID, $Name, $Description, $Price, $Image = '')
+    public function __construct($db)
     {
-        $this->ID = $ID;
-        $this->Name = $Name;
-        $this->Description = $Description;
-        $this->Price = $Price;
-        $this->Image = $Image;
+        $this->conn = $db;
     }
 
-    public function getID()
+    public function getProducts()
     {
-        return $this->ID;
+        $query = "SELECT p.id, p.name, p.description, p.price, p.image, c.name as category_name 
+                  FROM " . $this->table_name . " p 
+                  LEFT JOIN category c ON p.category_id = c.id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $result;
     }
 
-    public function setID($ID)
+    public function getProductsByCategory($category_id)
     {
-        $this->ID = $ID;
+        $query = "SELECT p.id, p.name, p.description, p.price, p.image, c.name as category_name 
+                  FROM " . $this->table_name . " p 
+                  LEFT JOIN category c ON p.category_id = c.id
+                  WHERE p.category_id = :category_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $result;
     }
 
-    public function getName()
+    public function getProductById($id)
     {
-        return $this->Name;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result;
     }
 
-    public function setName($Name)
+    private function sanitize(string $value): string
     {
-        $this->Name = $Name;
+        return htmlspecialchars(strip_tags($value));
     }
 
-    public function getDescription()
+    public function addProduct($name, $description, $price, $category_id, $image)
     {
-        return $this->Description;
+        $errors = [];
+        if (trim($name) === '') {
+            $errors[] = "Name is required.";
+        }
+        if (trim($description) === '') {
+            $errors[] = "Description is required.";
+        }
+        if (!is_numeric($price) || $price <= 0) {
+            $errors[] = "Valid price is required.";
+        }
+        if (!is_numeric($category_id) || (int)$category_id <= 0) {
+            $errors[] = "Valid category is required.";
+        }
+
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        $query = "INSERT INTO " . $this->table_name . " (name, description, price, image, category_id) 
+                  VALUES (:name, :description, :price, :image, :category_id)";
+        $stmt = $this->conn->prepare($query);
+
+        $name        = $this->sanitize($name);
+        $description = $this->sanitize($description);
+
+        $stmt->bindValue(':name', $name);
+        $stmt->bindValue(':description', $description);
+        $stmt->bindValue(':price', $price);
+        $stmt->bindValue(':image', $image);
+        $stmt->bindValue(':category_id', $category_id);
+
+        return $stmt->execute();
     }
 
-    public function setDescription($Description)
+    private function validateProductInput($name, $description, $price, $category_id): array
     {
-        $this->Description = $Description;
+        $errors = [];
+        if (trim($name) === '') {
+            $errors[] = "Name is required.";
+        }
+        if (trim($description) === '') {
+            $errors[] = "Description is required.";
+        }
+        if (!is_numeric($price) || (float)$price <= 0) {
+            $errors[] = "Valid price is required.";
+        }
+        if (!is_numeric($category_id) || (int)$category_id <= 0) {
+            $errors[] = "Valid category is required.";
+        }
+        return $errors;
     }
 
-    public function getPricen()
+    public function updateProduct($id, $name, $description, $price, $category_id, $image)
     {
-        return $this->Price;
+        $errors = $this->validateProductInput($name, $description, $price, $category_id);
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        $name        = $this->sanitize($name);
+        $description = $this->sanitize($description);
+
+        $query = "UPDATE " . $this->table_name . " 
+                  SET name = :name, description = :description, price = :price, image = :image, category_id = :category_id 
+                  WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':name', $name);
+        $stmt->bindValue(':description', $description);
+        $stmt->bindValue(':price', $price);
+        $stmt->bindValue(':image', $image);
+        $stmt->bindValue(':category_id', $category_id);
+        return $stmt->execute();
     }
 
-    public function setPrice($Price)
+    public function deleteProduct($id)
     {
-        $this->Price = $Price;
-    }
-
-    public function getImage()
-    {
-        return $this->Image;
-    }
-
-    public function setImage($Image)
-    {
-        $this->Image = $Image;
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
     }
 }
