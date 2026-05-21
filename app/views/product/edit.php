@@ -1,4 +1,6 @@
 <?php $title = 'Chỉnh sửa sản phẩm'; ?>
+<?php $product = $product ?? (object) ['id' => '', 'name' => '', 'description' => '', 'category_id' => '', 'price' => '', 'image' => '']; ?>
+<?php $categories = $categories ?? []; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -8,18 +10,28 @@
             <span>Edit item</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Chỉnh sửa sản phẩm</h1>
-        <p class="lead mb-0">Cập nhật nội dung, giá và hình ảnh trong một form gọn hơn.</p>
+        <p class="lead mb-0">Điều chỉnh thông tin sản phẩm và cập nhật ảnh theo từng lần chỉnh sửa.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm">
+    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-lg-9 col-xl-8">
+    <div class="col-lg-8 col-xl-7">
         <div class="surface-card p-3 p-lg-4">
             <form action="/phamgiahuy/Product/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $product->id; ?>">
+
+                <div class="field-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div>
+                            <div class="fw-semibold">Đang chỉnh sửa: #<?php echo $product->id; ?></div>
+                            <div class="muted-note">Thông tin thay đổi sẽ cập nhật ngay sau khi nhấn Cập nhật.</div>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25">Edit mode</span>
+                    </div>
+                </div>
 
                 <div class="row g-3">
                     <div class="col-md-12">
@@ -51,7 +63,7 @@
 
                     <div class="col-md-12">
                         <label class="form-label fw-semibold">Ảnh hiện tại</label>
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-4 bg-light">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-4" style="background: rgba(237, 244, 250, 0.75); border: 1px solid rgba(17, 33, 55, 0.08);">
                             <?php if (!empty($product->image) && file_exists('uploads/' . $product->image)): ?>
                                 <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($product->image); ?>" alt="Ảnh" class="img-thumbnail" width="96" height="96">
                             <?php else: ?>

@@ -8,9 +8,9 @@
             <span>New category</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Thêm danh mục</h1>
-        <p class="lead mb-0">Tạo nhóm sản phẩm mới với form tối giản và dễ đọc.</p>
+        <p class="lead mb-0">Tạo một nhóm sản phẩm mới để phân loại dữ liệu rõ ràng hơn.</p>
     </div>
-    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm">
+    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -26,6 +26,10 @@
                 </div>
             <?php endif; ?>
             <form action="/phamgiahuy/Category/save" method="POST">
+                <div class="field-card mb-3">
+                    <div class="fw-semibold mb-1">Thông tin danh mục</div>
+                    <div class="muted-note">Tên danh mục nên ngắn gọn và dễ nhận diện khi lọc sản phẩm.</div>
+                </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Tên *</label>
                     <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" required>

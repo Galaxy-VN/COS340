@@ -1,4 +1,6 @@
 <?php $title = 'Danh sách sản phẩm'; ?>
+<?php $products = $products ?? []; ?>
+<?php $current_category = $current_category ?? null; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -8,11 +10,39 @@
             <span>Product catalog</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Danh sách sản phẩm</h1>
-        <p class="lead mb-0">Quản lý sản phẩm theo danh mục, ảnh và giá trong một giao diện rõ ràng hơn.</p>
+        <p class="lead mb-0">Theo dõi nhanh tồn kho hiển thị, danh mục và giá trong một màn hình trực quan.</p>
     </div>
-    <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm">
+    <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-plus me-2"></i>Thêm sản phẩm
     </a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="surface-card p-3 h-100">
+            <div class="small text-uppercase fw-semibold muted-note mb-2">Tổng sản phẩm</div>
+            <div class="d-flex align-items-end justify-content-between">
+                <div class="h2 mb-0 fw-bold"><?php echo count($products); ?></div>
+                <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25">Đang hiển thị</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="surface-card p-3 h-100">
+            <div class="small text-uppercase fw-semibold muted-note mb-2">Danh mục đang xem</div>
+            <div class="fw-semibold fs-5 text-truncate"><?php echo htmlspecialchars($current_category->name ?? 'Tất cả danh mục'); ?></div>
+            <div class="muted-note mt-1">Lọc theo danh mục từ thanh bên trái</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="surface-card p-3 h-100">
+            <div class="small text-uppercase fw-semibold muted-note mb-2">Thao tác nhanh</div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/phamgiahuy/Product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+                <a href="/phamgiahuy/Product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="surface-card p-3 p-lg-4">
@@ -22,7 +52,7 @@
                 <i class="fas fa-box-open fa-2x text-primary"></i>
             </div>
             <h4 class="fw-semibold mb-2">Chưa có sản phẩm nào</h4>
-            <p class="mb-4">Hãy tạo sản phẩm đầu tiên để bắt đầu quản lý dữ liệu.</p>
+            <p class="mb-4">Hãy tạo sản phẩm đầu tiên để bắt đầu quản lý dữ liệu tập trung.</p>
             <a href="/phamgiahuy/Product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
         </div>
     <?php else: ?>
@@ -52,12 +82,18 @@
                                 <?php endif; ?>
                             </td>
                             <td><span class="badge bg-secondary"><?php echo $product->id; ?></span></td>
-                            <td class="fw-semibold"><?php echo htmlspecialchars($product->name); ?></td>
+                            <td>
+                                <div class="fw-semibold"><?php echo htmlspecialchars($product->name); ?></div>
+                                <div class="small muted-note">Mã SP: #<?php echo $product->id; ?></div>
+                            </td>
                             <td class="text-muted" style="max-width: 360px;"><?php echo htmlspecialchars($product->description); ?></td>
                             <td><span class="fw-semibold text-primary"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</span></td>
                             <td><span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25"><?php echo htmlspecialchars($product->category_name ?? '—'); ?></span></td>
                             <td>
                                 <div class="btn-group btn-group-sm">
+                                    <a href="/phamgiahuy/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary" title="Xem">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning" title="Sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>

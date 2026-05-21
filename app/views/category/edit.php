@@ -1,4 +1,5 @@
 <?php $title = 'Chỉnh sửa danh mục'; ?>
+<?php $category = $category ?? (object) ['id' => '', 'name' => '', 'description' => '']; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -8,9 +9,9 @@
             <span>Edit category</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Chỉnh sửa danh mục</h1>
-        <p class="lead mb-0">Cập nhật tên và mô tả danh mục trong một giao diện sạch hơn.</p>
+        <p class="lead mb-0">Cập nhật nhanh tên và mô tả để danh mục luôn rõ ràng, nhất quán.</p>
     </div>
-    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm">
+    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -20,6 +21,16 @@
         <div class="surface-card p-3 p-lg-4">
             <form action="/phamgiahuy/Category/update" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($category->id); ?>">
+
+                <div class="field-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div>
+                            <div class="fw-semibold">Danh mục #<?php echo htmlspecialchars($category->id); ?></div>
+                            <div class="muted-note">Điều chỉnh nội dung và lưu để áp dụng ngay trong bộ lọc sản phẩm.</div>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25">Đang chỉnh sửa</span>
+                    </div>
+                </div>
 
                 <div class="mb-3">
                     <label for="name" class="form-label fw-semibold">Tên danh mục <span class="text-danger">*</span></label>

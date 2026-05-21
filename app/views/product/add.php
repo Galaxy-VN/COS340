@@ -1,4 +1,5 @@
 <?php $title = 'Thêm sản phẩm'; ?>
+<?php $categories = $categories ?? []; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -8,15 +9,15 @@
             <span>New item</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Thêm sản phẩm mới</h1>
-        <p class="lead mb-0">Nhập thông tin sản phẩm với bố cục rõ ràng và dễ thao tác hơn.</p>
+        <p class="lead mb-0">Điền thông tin cốt lõi để sản phẩm xuất hiện ngay trong danh sách quản trị.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm">
+    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-lg-9 col-xl-8">
+    <div class="col-lg-8 col-xl-7">
         <div class="surface-card p-3 p-lg-4">
             <?php if (!empty($errors)): ?>
                 <div class="alert alert-danger border-0 rounded-4">
@@ -30,6 +31,13 @@
             <?php endif; ?>
 
             <form action="/phamgiahuy/Product/save" method="POST" enctype="multipart/form-data">
+                <div class="field-card mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fas fa-circle-info text-primary"></i>
+                        <div class="fw-semibold">Thông tin cơ bản</div>
+                    </div>
+                    <div class="muted-note">Các trường có dấu * là bắt buộc trước khi lưu.</div>
+                </div>
                 <div class="row g-3">
                     <div class="col-md-12">
                         <label for="name" class="form-label fw-semibold">Tên sản phẩm *</label>
@@ -61,7 +69,7 @@
                     <div class="col-md-12">
                         <label for="image" class="form-label fw-semibold">Hình ảnh</label>
                         <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                        <small class="text-muted d-block mt-2">JPG, PNG, GIF, WEBP - tối đa 5MB</small>
+                        <small class="muted-note d-block mt-2">Hỗ trợ JPG, PNG, GIF, WEBP. Nếu không chọn ảnh, hệ thống dùng ảnh đại diện mặc định.</small>
                     </div>
                 </div>
 

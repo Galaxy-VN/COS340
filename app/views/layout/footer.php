@@ -2,9 +2,9 @@
     </div>
 </div>
 
-<footer class="app-footer text-center py-4 border-top mt-5">
+<footer class="app-footer text-center py-4 mt-5">
     <div class="container">
-        <p class="mb-0 text-muted">&copy; <?php echo date('Y'); ?> Quản lý sản phẩm</p>
+        <p class="mb-0">&copy; <?php echo date('Y'); ?> Quản lý sản phẩm • Thiết kế lại trải nghiệm quản trị</p>
     </div>
 </footer>
 
@@ -31,8 +31,9 @@ $(document).ready(function() {
             },
             pagingType: "simple_numbers",
             responsive: true,
-            pageLength: 8,
+            pageLength: 10,
             lengthChange: true,
+            dom: '<"row align-items-center mb-3"<"col-md-6"l><"col-md-6"f>>rt<"row align-items-center mt-3"<"col-md-6"i><"col-md-6"p>>',
             order: [[1, 'desc']]
         });
     }
