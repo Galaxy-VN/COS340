@@ -1,6 +1,7 @@
 <?php $title = 'Danh sách sản phẩm'; ?>
 <?php $products = $products ?? []; ?>
 <?php $current_category = $current_category ?? null; ?>
+<?php $cartCount = $cartCount ?? 0; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -12,9 +13,14 @@
         <h1 class="h3 mb-2 fw-bold">Danh sách sản phẩm</h1>
         <p class="lead mb-0">Theo dõi nhanh tồn kho hiển thị, danh mục và giá trong một màn hình trực quan.</p>
     </div>
-    <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
-        <i class="fas fa-plus me-2"></i>Thêm sản phẩm
-    </a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="/phamgiahuy/Product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;">
+            <i class="fas fa-cart-shopping me-2"></i>Giỏ hàng <?php if ($cartCount > 0): ?><span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?>
+        </a>
+        <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+            <i class="fas fa-plus me-2"></i>Thêm sản phẩm
+        </a>
+    </div>
 </div>
 
 <div class="row g-3 mb-3">
@@ -90,7 +96,15 @@
                             <td><span class="fw-semibold text-primary"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</span></td>
                             <td><span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25"><?php echo htmlspecialchars($product->category_name ?? '—'); ?></span></td>
                             <td>
-                                <div class="btn-group btn-group-sm">
+                                <div class="btn-group btn-group-sm flex-wrap">
+                                    <form action="/phamgiahuy/Product/addToCart" method="POST" class="d-inline">
+                                        <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <input type="hidden" name="redirect_to" value="/phamgiahuy/Product">
+                                        <button type="submit" class="btn btn-outline-success" title="Thêm vào giỏ">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </form>
                                     <a href="/phamgiahuy/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary" title="Xem">
                                         <i class="fas fa-eye"></i>
                                     </a>

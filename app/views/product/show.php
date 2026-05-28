@@ -1,6 +1,7 @@
 <?php $title = 'Chi tiết sản phẩm'; ?>
 <?php $product = $product ?? (object) ['id' => '', 'name' => '', 'description' => '', 'price' => 0, 'image' => '']; ?>
 <?php $category = $category ?? (object) ['name' => '—']; ?>
+<?php $cartCount = $cartCount ?? 0; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
 <div class="page-hero d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
@@ -14,6 +15,7 @@
     </div>
     <div class="d-flex gap-2">
         <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+        <a href="/phamgiahuy/Product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-cart-shopping me-2"></i>Giỏ hàng<?php if ($cartCount > 0): ?> <span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?></a>
         <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-dark fw-semibold"><i class="fas fa-pen-to-square me-2"></i>Chỉnh sửa</a>
     </div>
 </div>
@@ -44,6 +46,24 @@
                     <div class="field-card mb-3">
                         <div class="text-muted small text-uppercase fw-semibold mb-1">Mô tả</div>
                         <div class="text-body-emphasis lh-lg"><?php echo nl2br(htmlspecialchars($product->description)); ?></div>
+                    </div>
+                    <div class="field-card">
+                        <form action="/phamgiahuy/Product/addToCart" method="POST" class="row g-3 align-items-end">
+                            <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                            <input type="hidden" name="redirect_to" value="/phamgiahuy/Product/show/<?php echo $product->id; ?>">
+                            <div class="col-sm-5">
+                                <label for="quantity" class="form-label fw-semibold">Số lượng</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" step="1">
+                            </div>
+                            <div class="col-sm-7 d-flex gap-2 flex-wrap">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-cart-plus me-1"></i>Thêm vào giỏ
+                                </button>
+                                <a href="/phamgiahuy/Product/cart" class="btn btn-outline-primary">
+                                    <i class="fas fa-bag-shopping me-1"></i>Xem giỏ
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

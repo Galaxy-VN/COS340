@@ -348,12 +348,23 @@
 </head>
 <body>
 <?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 $route = trim($_GET['url'] ?? '', '/');
 $routeParts = $route === '' ? [] : explode('/', $route);
 $routeController = $routeParts[0] ?? '';
 $routeAction = $routeParts[1] ?? 'index';
 $showSidebar = $routeController === 'Product' && in_array($routeAction, ['index', 'category'], true);
 $sidebarCategories = $categories ?? [];
+$cartItems = $_SESSION['cart'] ?? [];
+$cartCount = 0;
+foreach ($cartItems as $cartItem) {
+    $cartCount += (int) ($cartItem['quantity'] ?? 0);
+}
+$flashMessage = $_SESSION['flash_message'] ?? null;
+$flashType = $_SESSION['flash_type'] ?? 'success';
+unset($_SESSION['flash_message'], $_SESSION['flash_type']);
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
@@ -371,6 +382,14 @@ $sidebarCategories = $categories ?? [];
                         <i class="fas fa-box me-1"></i>Sản phẩm
                     </a>
                 </li>
+                <li class="nav-item me-2">
+                    <a class="btn btn-light btn-sm position-relative" href="/phamgiahuy/Product/cart">
+                        <i class="fas fa-cart-shopping me-1"></i>Giỏ hàng
+                        <?php if ($cartCount > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"><?php echo $cartCount; ?></span>
+                        <?php endif; ?>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="btn btn-light btn-sm" href="/phamgiahuy/Category">
                         <i class="fas fa-folder me-1"></i>Danh mục
@@ -382,6 +401,11 @@ $sidebarCategories = $categories ?? [];
 </nav>
 <div class="app-shell">
 <div class="container-fluid main-container">
+    <?php if (!empty($flashMessage)): ?>
+        <div class="alert alert-<?php echo htmlspecialchars($flashType); ?> border-0 shadow-sm rounded-4 mb-3">
+            <i class="fas fa-circle-check me-2"></i><?php echo htmlspecialchars($flashMessage); ?>
+        </div>
+    <?php endif; ?>
     <div class="row align-items-start">
         <?php if ($showSidebar): ?>
         <!-- Sidebar -->

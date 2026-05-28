@@ -11,15 +11,50 @@ class ProductController
 
     public function __construct()
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
         $this->categoryModel = new CategoryModel($this->db);
+    }
+
+    private function getCart(): array
+    {
+        return $_SESSION['cart'] ?? [];
+    }
+
+    private function saveCart(array $cart): void
+    {
+        $_SESSION['cart'] = $cart;
+    }
+
+    private function getCartCount(): int
+    {
+        $count = 0;
+        foreach ($this->getCart() as $item) {
+            $count += (int) ($item['quantity'] ?? 0);
+        }
+        return $count;
+    }
+
+    private function setFlash(string $message, string $type = 'success'): void
+    {
+        $_SESSION['flash_message'] = $message;
+        $_SESSION['flash_type'] = $type;
+    }
+
+    private function redirectTo(string $path): void
+    {
+        header('Location: ' . $path);
+        exit;
     }
 
     public function index()
     {
         $categories = $this->categoryModel->getCategories();
         $products = $this->productModel->getProducts();
+        $cartCount = $this->getCartCount();
         include 'app/views/product/list.php';
     }
 
@@ -33,6 +68,7 @@ class ProductController
         }
         $products = $this->productModel->getProductsByCategory($categoryId);
         $current_category = $category;
+        $cartCount = $this->getCartCount();
         include 'app/views/product/list.php';
     }
 
@@ -48,7 +84,124 @@ class ProductController
             die('Product not found');
         }
         $category = $this->categoryModel->getCategoryById($product->category_id);
+        $cartCount = $this->getCartCount();
         include 'app/views/product/show.php';
+    }
+
+    public function cart()
+    {
+        $cart = $this->getCart();
+        $items = [];
+        $subtotal = 0;
+
+        foreach ($cart as $productId => $item) {
+            $product = $this->productModel->getProductById($productId);
+            if (!$product) {
+                continue;
+            }
+
+            $quantity = max(1, (int) ($item['quantity'] ?? 1));
+            $price = (float) $product->price;
+            $lineTotal = $price * $quantity;
+            $subtotal += $lineTotal;
+
+            $items[] = [
+                'id' => (int) $product->id,
+                'name' => $product->name,
+                'image' => $product->image,
+                'price' => $price,
+                'quantity' => $quantity,
+                'line_total' => $lineTotal,
+            ];
+        }
+
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/cart.php';
+    }
+
+    public function addToCart()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirectTo('/phamgiahuy/Product');
+        }
+
+        $productId = (int) ($_POST['product_id'] ?? 0);
+        $quantity = (int) ($_POST['quantity'] ?? 1);
+        $quantity = $quantity > 0 ? $quantity : 1;
+
+        $product = $this->productModel->getProductById($productId);
+        if (!$product) {
+            $this->setFlash('Sản phẩm không tồn tại.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product');
+        }
+
+        $cart = $this->getCart();
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] += $quantity;
+        } else {
+            $cart[$productId] = [
+                'id' => (int) $product->id,
+                'name' => $product->name,
+                'price' => (float) $product->price,
+                'image' => $product->image,
+                'quantity' => $quantity,
+            ];
+        }
+
+        $this->saveCart($cart);
+        $this->setFlash('Đã thêm sản phẩm vào giỏ hàng.');
+
+        $redirectTo = $_POST['redirect_to'] ?? '/phamgiahuy/Product/cart';
+        $this->redirectTo($redirectTo);
+    }
+
+    public function updateCart()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirectTo('/phamgiahuy/Product/cart');
+        }
+
+        $quantities = $_POST['quantity'] ?? [];
+        $cart = $this->getCart();
+
+        foreach ($quantities as $productId => $quantity) {
+            $productId = (int) $productId;
+            $quantity = (int) $quantity;
+
+            if ($quantity <= 0) {
+                unset($cart[$productId]);
+                continue;
+            }
+
+            if (isset($cart[$productId])) {
+                $cart[$productId]['quantity'] = $quantity;
+            }
+        }
+
+        $this->saveCart($cart);
+        $this->setFlash('Đã cập nhật giỏ hàng.');
+        $this->redirectTo('/phamgiahuy/Product/cart');
+    }
+
+    public function removeFromCart($id)
+    {
+        $productId = (int) $id;
+        $cart = $this->getCart();
+
+        if (isset($cart[$productId])) {
+            unset($cart[$productId]);
+            $this->saveCart($cart);
+            $this->setFlash('Đã xóa sản phẩm khỏi giỏ hàng.');
+        }
+
+        $this->redirectTo('/phamgiahuy/Product/cart');
+    }
+
+    public function clearCart()
+    {
+        $this->saveCart([]);
+        $this->setFlash('Đã xóa toàn bộ giỏ hàng.');
+        $this->redirectTo('/phamgiahuy/Product/cart');
     }
 
 
