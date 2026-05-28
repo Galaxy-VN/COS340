@@ -8,33 +8,23 @@
     </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
-$(document).ready(function() {
-    const productTable = $('#productTable');
-
-    if (productTable.length) {
-        if ($.fn.DataTable.isDataTable(productTable)) {
-            productTable.DataTable().destroy();
-        }
-
-        productTable.DataTable({
-            language: {
-                lengthMenu: "Hiển thị _MENU_",
-                zeroRecords: "Không có dữ liệu",
-                info: "Trang _PAGE_ / _PAGES_",
-                search: "Tìm:",
-                paginate: { first: "Đầu", last: "Cuối", next: "Tiếp", previous: "Trước" }
-            },
-            pagingType: "simple_numbers",
-            responsive: true,
-            pageLength: 10,
+$(document).ready(function(){
+    if ($('#productTable').length) {
+        $('#productTable').DataTable({
+            pageLength: 15,
             lengthChange: true,
-            dom: '<"row align-items-center mb-3"<"col-md-6"l><"col-md-6"f>>rt<"row align-items-center mt-3"<"col-md-6"i><"col-md-6"p>>',
-            order: [[1, 'desc']]
+            searching: true,
+            language: {
+                search: "Tìm kiếm:",
+                lengthMenu: "Mục mỗi trang: _MENU_",
+                zeroRecords: "Không có dữ liệu",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+                paginate: { previous: "Trước", next: "Sau" }
+            }
         });
     }
 });

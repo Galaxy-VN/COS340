@@ -122,14 +122,32 @@
                     <a href="/phamgiahuy/Product" class="btn btn-outline-secondary">
                         <i class="fas fa-bag-shopping me-2"></i>Tiếp tục chọn hàng
                     </a>
-                    <button type="button" class="btn btn-primary" disabled>
+                    <a href="/phamgiahuy/Product/checkout" class="btn btn-primary">
                         <i class="fas fa-credit-card me-2"></i>Thanh toán
-                    </button>
+                    </a>
                 </div>
-                <div class="muted-note small mt-3">Nút thanh toán đang để trống vì phần xử lý đơn hàng chưa được nối vào hệ thống.</div>
+                <div class="muted-note small mt-3">Nhấn Thanh toán để nhập thông tin nhận hàng và xác nhận đơn của bạn.</div>
             </div>
         </div>
     </div>
 <?php endif; ?>
 
 <?php include 'app/views/layout/footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const form = document.querySelector('form[action="/phamgiahuy/Product/updateCart"]');
+    if (!form) return;
+    let timer = null;
+    const inputs = form.querySelectorAll('input[name^="quantity"]');
+    inputs.forEach(function(input){
+        input.addEventListener('input', function(){
+            clearTimeout(timer);
+            // debounce so user can type a number
+            timer = setTimeout(function(){
+                form.submit();
+            }, 600);
+        });
+    });
+});
+</script>

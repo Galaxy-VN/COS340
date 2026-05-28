@@ -2,11 +2,13 @@
 require_once 'app/config/database.php';
 require_once 'app/models/ProductModel.php';
 require_once 'app/models/CategoryModel.php';
+require_once 'app/models/OrderModel.php';
 
 class ProductController
 {
     private $productModel;
     private $categoryModel;
+    private $orderModel;
     private $db;
 
     public function __construct()
@@ -17,6 +19,7 @@ class ProductController
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
         $this->categoryModel = new CategoryModel($this->db);
+        $this->orderModel = new OrderModel($this->db);
     }
 
     private function getCart(): array
@@ -204,6 +207,146 @@ class ProductController
         $this->redirectTo('/phamgiahuy/Product/cart');
     }
 
+
+    public function checkout()
+    {
+        $cart = $this->getCart();
+        if (empty($cart)) {
+            $this->setFlash('Giỏ hàng trống.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product/cart');
+        }
+
+        $items = [];
+        $subtotal = 0;
+        foreach ($cart as $productId => $item) {
+            $product = $this->productModel->getProductById($productId);
+            if (!$product) continue;
+            $quantity = max(1, (int) ($item['quantity'] ?? 1));
+            $price = (float) $product->price;
+            $lineTotal = $price * $quantity;
+            $subtotal += $lineTotal;
+            $items[] = [
+                'id' => (int) $product->id,
+                'name' => $product->name,
+                'image' => $product->image,
+                'price' => $price,
+                'quantity' => $quantity,
+                'line_total' => $lineTotal
+            ];
+        }
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/checkout.php';
+    }
+
+    public function processCheckout()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirectTo('/phamgiahuy/Product/checkout');
+        }
+        $cart = $this->getCart();
+        if (empty($cart)) {
+            $this->redirectTo('/phamgiahuy/Product');
+        }
+        $name = $_POST['name'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $address = $_POST['address'] ?? '';
+        if (empty($name) || empty($phone) || empty($address)) {
+            $this->setFlash('Vui lòng điền đầy đủ thông tin.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product/checkout');
+        }
+        $items = [];
+        foreach ($cart as $productId => $item) {
+            $product = $this->productModel->getProductById($productId);
+            if (!$product) continue;
+            $qty = (int)$item['quantity'];
+            $price = (float)$product->price;
+            $items[] = [
+                'product_id' => $product->id,
+                'price' => $price,
+                'quantity' => $qty
+            ];
+        }
+        $orderId = $this->orderModel->createOrder($name, $phone, $address, $items);
+        if ($orderId) {
+            $this->saveCart([]);
+            $this->setFlash('Đặt hàng thành công! Mã đơn hàng: #' . $orderId, 'success');
+            $this->redirectTo('/phamgiahuy/Product/confirm/' . $orderId);
+        } else {
+            $this->setFlash('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product/checkout');
+        }
+    }
+
+    public function confirm($id)
+    {
+        $order = $this->orderModel->getOrderById($id);
+        if (!$order) {
+            $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product');
+        }
+
+        $orderDetails = $this->orderModel->getOrderDetails($id);
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/confirm.php';
+    }
+
+    public function orders()
+    {
+        $rawOrders = $this->orderModel->getOrders();
+        $orders = [];
+        foreach ($rawOrders as $o) {
+            $details = $this->orderModel->getOrderDetails($o['id']);
+            $total = 0;
+            foreach ($details as $d) {
+                $total += $d['price'] * $d['quantity'];
+            }
+            $orders[] = [
+                'id' => $o['id'],
+                'date' => $o['order_date'],
+                'status' => $o['status'] ?? 'pending',
+                'customer' => [
+                    'name' => $o['name'],
+                    'phone' => $o['phone'],
+                    'address' => $o['address']
+                ],
+                'total' => $total
+            ];
+        }
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/orders.php';
+    }
+
+    public function orderDetail($id)
+    {
+        $order = $this->orderModel->getOrderById($id);
+        if (!$order) {
+            $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product/orders');
+        }
+        $orderDetails = $this->orderModel->getOrderDetails($id);
+        $order['items'] = [];
+        $order['total'] = 0;
+        foreach ($orderDetails as $detail) {
+            $lineTotal = $detail['price'] * $detail['quantity'];
+                $order['items'][] = [
+                    'product_id' => $detail['product_id'],
+                    'name' => $detail['name'] ?? 'Sản phẩm đã bị xóa',
+                    'image' => $detail['image'] ?? '',
+                    'price' => $detail['price'],
+                    'quantity' => $detail['quantity'],
+                    'line_total' => $lineTotal
+                ];
+            $order['total'] += $lineTotal;
+        }
+        $order['customer'] = [
+            'name' => $order['name'],
+            'phone' => $order['phone'],
+            'address' => $order['address']
+        ];
+        $order['date'] = $order['order_date'];
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/orderDetail.php';
+    }
 
     public function add()
     {
