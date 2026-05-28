@@ -298,6 +298,31 @@
             border-color: rgba(255,255,255,0.3);
         }
 
+        /* Glass-style button for subtle CTA (used in order detail for Mua lại / Xem) */
+        .btn-glass {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text-main);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 10px;
+            padding: 0.35rem 0.7rem;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-glass:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        .btn-glass.btn-sm {
+            padding: 0.275rem 0.5rem;
+            font-size: 0.86rem;
+        }
+
         /* Compact action buttons in tables */
         .table .btn, .btn-group .btn {
             padding: 0.35rem 0.55rem;

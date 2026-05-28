@@ -24,15 +24,15 @@
                 Thông tin nhận hàng
             </h5>
             <div class="mb-3">
-                <div class="text-muted small text-uppercase fw-bold mb-1">Người nhận</div>
+                <div class="text-white small text-uppercase fw-bold mb-1">Người nhận</div>
                 <div class="fw-semibold fs-5"><?php echo htmlspecialchars($order['customer']['name']); ?></div>
             </div>
             <div class="mb-3">
-                <div class="text-muted small text-uppercase fw-bold mb-1">Số điện thoại</div>
+                <div class="text-white small text-uppercase fw-bold mb-1">Số điện thoại</div>
                 <div class="fw-semibold fs-6"><?php echo htmlspecialchars($order['customer']['phone']); ?></div>
             </div>
             <div class="mb-3">
-                <div class="text-muted small text-uppercase fw-bold mb-1">Địa chỉ giao hàng (COD)</div>
+                <div class="text-white small text-uppercase fw-bold mb-1">Địa chỉ giao hàng (COD)</div>
                 <div class="fs-6"><?php echo nl2br(htmlspecialchars($order['customer']['address'])); ?></div>
             </div>
             
@@ -99,9 +99,15 @@
                                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                                     <input type="hidden" name="quantity" value="1">
                                                     <input type="hidden" name="redirect_to" value="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>">
-                                                    <button type="submit" class="btn btn-sm btn-primary">Mua lại</button>
+                                                    <button type="submit" class="btn btn-sm btn-glass">
+                                                        <i class="fas fa-cart-plus"></i>
+                                                        Mua lại
+                                                    </button>
                                                 </form>
-                                                <a href="/phamgiahuy/Product/show/<?php echo (int)$item['product_id']; ?>" class="btn btn-sm btn-outline-light">Xem chi tiết sản phẩm</a>
+                                                <a href="/phamgiahuy/Product/show/<?php echo (int)$item['product_id']; ?>" class="btn btn-sm btn-glass">
+                                                    <i class="fas fa-eye"></i>
+                                                    Xem chi tiết
+                                                </a>
                                             <?php else: ?>
                                                 <span class="small text-muted">Sản phẩm đã bị xóa khỏi cửa hàng</span>
                                             <?php endif; ?>
@@ -116,11 +122,11 @@
             <div class="d-flex justify-content-end">
                 <div style="width: 300px;">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Tổng tiền hàng:</span>
+                        <span class="text-white">Tổng tiền hàng:</span>
                         <span class="fw-semibold"><?php echo number_format($order['total'], 0, ',', '.'); ?>đ</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-secondary border-opacity-25">
-                        <span class="text-muted">Phí giao hàng:</span>
+                        <span class="text-white">Phí giao hàng:</span>
                         <span class="fw-semibold">Miễn phí</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-end">
