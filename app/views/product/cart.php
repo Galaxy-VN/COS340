@@ -51,50 +51,35 @@
                         </button>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th style="width: 130px;">Đơn giá</th>
-                                    <th style="width: 130px;">Số lượng</th>
-                                    <th style="width: 140px;">Thành tiền</th>
-                                    <th style="width: 90px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($items as $item): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="rounded-4 overflow-hidden bg-light d-flex align-items-center justify-content-center" style="width: 76px; height: 76px; flex: 0 0 auto;">
-                                                    <?php if (!empty($item['image'])): ?>
-                                                        <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($item['image']); ?>" alt="Ảnh sản phẩm" class="w-100 h-100" style="object-fit: cover;">
-                                                    <?php else: ?>
-                                                        <i class="fas fa-image text-muted"></i>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold"><?php echo htmlspecialchars($item['name']); ?></div>
-                                                    <div class="small muted-note">Mã #<?php echo $item['id']; ?></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="fw-semibold text-primary"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</td>
-                                        <td>
-                                            <input type="number" class="form-control" name="quantity[<?php echo $item['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="0" step="1">
-                                            <div class="small muted-note mt-1">Nhập 0 để xóa</div>
-                                        </td>
-                                        <td class="fw-bold"><?php echo number_format($item['line_total'], 0, ',', '.'); ?>đ</td>
-                                        <td>
-                                            <a href="/phamgiahuy/Product/removeFromCart/<?php echo $item['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Xóa sản phẩm này khỏi giỏ?')">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                    <div class="list-group">
+                        <?php foreach ($items as $item): ?>
+                            <div class="list-group-item d-flex gap-3 align-items-center">
+                                <div style="width:76px; height:76px; flex-shrink:0;">
+                                    <?php if (!empty($item['image'])): ?>
+                                        <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($item['image']); ?>" class="img-thumbnail" style="width:76px; height:76px; object-fit:cover; border-radius:10px;">
+                                    <?php else: ?>
+                                        <div class="bg-light d-flex align-items-center justify-content-center rounded-2" style="width:76px; height:76px;"><i class="fas fa-image text-muted"></i></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="flex:1 1 auto; min-width:0;">
+                                    <div class="fw-semibold text-truncate"><?php echo htmlspecialchars($item['name']); ?></div>
+                                    <div class="small text-muted">Mã #<?php echo $item['id']; ?></div>
+                                </div>
+                                <div style="width:160px;">
+                                    <label class="small text-muted d-block mb-1">Số lượng</label>
+                                    <input type="number" class="form-control form-control-sm" name="quantity[<?php echo $item['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="0" step="1">
+                                </div>
+                                <div style="width:120px; text-align:right;">
+                                    <div class="fw-bold"><?php echo number_format($item['line_total'], 0, ',', '.'); ?>đ</div>
+                                    <div class="small text-muted"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</div>
+                                </div>
+                                <div>
+                                    <a href="/phamgiahuy/Product/removeFromCart/<?php echo $item['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Xóa sản phẩm này khỏi giỏ?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </form>
             </div>

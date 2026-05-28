@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -51,7 +52,7 @@
                 radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.2), transparent 45%),
                 radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.1), transparent 50%);
             background-attachment: fixed;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Noto Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 0.95rem;
             line-height: 1.6;
             color: var(--text-main);
@@ -93,30 +94,28 @@
             z-index: 1;
         }
         .navbar {
-            background: rgba(15, 23, 42, 0.6) !important;
-            backdrop-filter: var(--glass-blur);
+            background: rgba(255, 255, 255, 0.04) !important;
+            backdrop-filter: blur(8px) saturate(120%);
             -webkit-backdrop-filter: var(--glass-blur);
-            box-shadow: var(--shadow-soft), var(--liquid-highlight);
-            border: var(--glass-border);
-            padding-top: 0.8rem;
-            padding-bottom: 0.8rem;
+            box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.45rem 0.6rem;
             margin: 1rem auto;
-            border-radius: var(--radius-xl);
+            border-radius: 14px;
             max-width: calc(100% - 2rem);
             position: sticky;
-            top: 1rem;
+            top: 10px;
             z-index: 1020;
         }
         .navbar-brand {
-            font-family: 'Be Vietnam Pro', sans-serif;
+            font-family: 'Poppins', 'Be Vietnam Pro', sans-serif;
             font-weight: 700;
-            font-size: 1.15rem;
+            font-size: 1rem;
             letter-spacing: -0.02em;
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.6rem;
             color: var(--text-main) !important;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
         .navbar-brand .brand-mark {
             width: 40px;
@@ -131,10 +130,23 @@
             font-size: 1.2rem;
             border: 1px solid rgba(255,255,255,0.4);
         }
+        /* Modern minimal header overrides */
+        .navbar .container-fluid { display:flex; align-items:center; gap:0.75rem; }
+        .header-search { flex: 1 1 540px; max-width: 640px; }
+        .header-search .form-control { border-radius: 999px; padding: 0.45rem 0.9rem; font-size: 0.95rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: var(--text-main); }
+        .header-actions { display:flex; align-items:center; gap:0.5rem; }
+        .header-actions .btn { padding: 0.42rem 0.6rem; border-radius: 999px; }
+        .cart-badge { position: relative; font-size: 0.65rem; top: -8px; left: -8px; }
+        @media (max-width: 767.98px) {
+            .header-search { display: none; }
+            .navbar { padding: 0.35rem 0.4rem; }
+            .navbar-brand { font-size: 0.95rem; }
+            .navbar-brand .brand-mark { width: 34px; height: 34px; }
+        }
         
         /* Headers */
         h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-            font-family: 'Be Vietnam Pro', sans-serif;
+            font-family: 'Poppins', 'Be Vietnam Pro', sans-serif;
             font-weight: 700;
         }
 
@@ -624,38 +636,129 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
             <span class="brand-mark"><i class="fas fa-cubes"></i></span>
             <span>Quản lý sản phẩm</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+
+        <div class="header-search d-none d-md-block">
+            <form action="/phamgiahuy/Product" method="GET" class="w-100">
+                <div class="input-group">
+                    <input name="q" class="form-control" placeholder="Tìm sản phẩm, mã SP..." value="<?php echo htmlspecialchars($_GET['q'] ?? '') ?>">
+                    <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+
+        <div class="header-actions ms-auto">
+            <button class="btn btn-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer" title="Giỏ hàng">
+                <i class="fas fa-cart-shopping"></i>
+                <?php if ($cartCount > 0): ?>
+                    <span class="badge bg-warning text-dark cart-badge"><?php echo $cartCount; ?></span>
+                <?php endif; ?>
+            </button>
+            <a href="/phamgiahuy/Product/orders" class="btn btn-glass d-none d-md-inline" title="Đơn hàng">
+                <i class="fas fa-receipt"></i>
+            </a>
+            <a href="/phamgiahuy/Category" class="btn btn-glass d-none d-md-inline" title="Danh mục">
+                <i class="fas fa-folder"></i>
+            </a>
+
+            <button class="navbar-toggler ms-2 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse d-md-none" id="navbarNav">
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item me-2">
-                    <a class="btn btn-light btn-sm" href="/phamgiahuy/Product">
-                        <i class="fas fa-box me-1"></i>Sản phẩm
-                    </a>
+                    <a class="nav-link" href="/phamgiahuy/Product"><i class="fas fa-box me-1"></i> Sản phẩm</a>
                 </li>
                 <li class="nav-item me-2">
-                    <a class="btn btn-light btn-sm position-relative" href="/phamgiahuy/Product/cart">
-                        <i class="fas fa-cart-shopping me-1"></i>Giỏ hàng
-                        <?php if ($cartCount > 0): ?>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"><?php echo $cartCount; ?></span>
-                        <?php endif; ?>
-                    </a>
+                    <a class="nav-link" href="/phamgiahuy/Product/cart"><i class="fas fa-cart-shopping me-1"></i> Giỏ hàng</a>
                 </li>
                 <li class="nav-item me-2">
-                    <a class="btn btn-light btn-sm" href="/phamgiahuy/Product/orders">
-                        <i class="fas fa-receipt me-1"></i>Đơn hàng
-                    </a>
+                    <a class="nav-link" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
+                   </div>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-light btn-sm" href="/phamgiahuy/Category">
-                        <i class="fas fa-folder me-1"></i>Danh mục
-                    </a>
+                    <a class="nav-link" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<!-- Cart Drawer Offcanvas -->
+<div class="offcanvas offcanvas-end text-dark" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="cartDrawerLabel"><i class="fas fa-cart-shopping me-2"></i>Giỏ hàng</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="p-3">
+            <?php if (empty($cartItems)): ?>
+                <div class="empty-state">
+                    <p class="mb-0">Giỏ hàng trống</p>
+                </div>
+            <?php else: ?>
+                <div class="list-group">
+                    <?php $cartTotal = 0; foreach ($cartItems as $ci): ?>
+                        <?php $line = ((float)($ci['price'] ?? 0)) * ((int)($ci['quantity'] ?? 0)); $cartTotal += $line; ?>
+                        <div class="list-group-item d-flex align-items-center gap-3">
+                            <div style="width:64px; height:64px; flex-shrink:0;">
+                                <?php if (!empty($ci['image']) && file_exists('uploads/' . $ci['image'])): ?>
+                                    <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($ci['image']); ?>" class="img-thumbnail" style="width:64px; height:64px; object-fit:cover; border-radius:10px;">
+                                <?php else: ?>
+                                    <div class="bg-light d-flex align-items-center justify-content-center rounded-2" style="width:64px; height:64px;"><i class="fas fa-image text-muted"></i></div>
+                                <?php endif; ?>
+                            </div>
+                            <div style="flex:1 1 auto; min-width:0;">
+                                <div class="fw-semibold text-truncate"><?php echo htmlspecialchars($ci['name'] ?? 'Sản phẩm'); ?></div>
+                                <div class="small text-muted">Giá: <?php echo number_format($line, 0, ',', '.'); ?>đ</div>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-2">
+                                <form class="update-cart-form d-flex align-items-center" onsubmit="return false;">
+                                    <input type="hidden" name="product_id" value="<?php echo (int)($ci['product_id'] ?? 0); ?>">
+                                    <input type="number" name="quantity" value="<?php echo (int)($ci['quantity'] ?? 0); ?>" min="1" class="form-control form-control-sm me-2" style="width:78px;">
+                                    <button class="btn btn-sm btn-outline-secondary update-cart-btn" type="button" title="Cập nhật"><i class="fas fa-check"></i></button>
+                                </form>
+                                <form action="/phamgiahuy/Product/removeFromCart" method="POST">
+                                    <input type="hidden" name="product_id" value="<?php echo (int)($ci['product_id'] ?? 0); ?>">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit" title="Xóa"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="p-3 border-top">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="small text-muted">Tổng</div>
+                        <div class="fw-bold"><?php echo number_format($cartTotal, 0, ',', '.'); ?>đ</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/phamgiahuy/Product/checkout" class="btn btn-primary flex-grow-1">Thanh toán</a>
+                        <a href="/phamgiahuy/Product/cart" class="btn btn-glass">Xem giỏ</a>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<script>
+// AJAX update cart from offcanvas
+document.addEventListener('DOMContentLoaded', function(){
+    $(document).on('click', '.update-cart-btn', function(e){
+        var $btn = $(this);
+        var $form = $btn.closest('.update-cart-form');
+        var product_id = $form.find('input[name="product_id"]').val();
+        var quantity = $form.find('input[name="quantity"]').val();
+        if (!product_id) return;
+        $.post('/phamgiahuy/Product/updateCart', { product_id: product_id, quantity: quantity })
+            .done(function(res){
+                // reload to refresh cart and totals
+                location.reload();
+            }).fail(function(){
+                alert('Cập nhật giỏ hàng thất bại. Vui lòng thử lại.');
+            });
+    });
+});
+</script>
 <div class="app-shell">
 <div class="container-fluid main-container">
     <?php if (!empty($flashMessage)): ?>
