@@ -659,6 +659,21 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
             <a href="/phamgiahuy/Category" class="btn btn-glass d-none d-md-inline" title="Danh mục">
                 <i class="fas fa-folder"></i>
             </a>
+            <?php if (isset($_SESSION['user'])): ?>
+                <span class="btn-glass d-none d-md-inline" style="cursor:default;">
+                    <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?>
+                </span>
+                <a href="/phamgiahuy/account/logout" class="btn btn-glass d-none d-md-inline" title="Đăng xuất">
+                    <i class="fas fa-right-from-bracket"></i>
+                </a>
+            <?php else: ?>
+                <a href="/phamgiahuy/account/login" class="btn btn-glass d-none d-md-inline" title="Đăng nhập">
+                    <i class="fas fa-right-to-bracket"></i>
+                </a>
+                <a href="/phamgiahuy/account/register" class="btn btn-glass d-none d-md-inline" title="Đăng ký">
+                    <i class="fas fa-user-plus"></i>
+                </a>
+            <?php endif; ?>
 
             <button class="navbar-toggler ms-2 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -680,6 +695,21 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
                 <li class="nav-item">
                     <a class="nav-link" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
                 </li>
+                <?php if (isset($_SESSION['user'])): ?>
+                    <li class="nav-item">
+                        <span class="nav-link" style="opacity:1;"><i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/phamgiahuy/account/logout"><i class="fas fa-right-from-bracket me-1"></i> Đăng xuất</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/phamgiahuy/account/login"><i class="fas fa-right-to-bracket me-1"></i> Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/phamgiahuy/account/register"><i class="fas fa-user-plus me-1"></i> Đăng ký</a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
