@@ -703,9 +703,11 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                 <a href="/phamgiahuy/Product/orders" class="btn btn-glass" title="Đơn hàng">
                     <i class="fas fa-receipt"></i>
                 </a>
-                <a href="/phamgiahuy/Category" class="btn btn-glass" title="Danh mục">
-                    <i class="fas fa-folder"></i>
-                </a>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a href="/phamgiahuy/Category" class="btn btn-glass" title="Danh mục">
+                        <i class="fas fa-folder"></i>
+                    </a>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['username'])): ?>
                     <a href="/phamgiahuy/account/logout" class="btn btn-glass" title="Đăng xuất" onclick="return confirm('Bạn muốn đăng xuất?')">
                         <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?>
@@ -732,9 +734,11 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                 <li class="nav-item">
                     <a class="nav-link <?php echo $isOrders ? 'active' : ''; ?>" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
-                </li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
+                    </li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['username'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/phamgiahuy/account/logout" onclick="return confirm('Bạn muốn đăng xuất?')">

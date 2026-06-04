@@ -17,9 +17,11 @@
         <button class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer">
             <i class="fas fa-cart-shopping me-2"></i>Giỏ hàng <?php if ($cartCount > 0): ?><span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?>
         </button>
-        <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
-            <i class="fas fa-plus me-2"></i>Thêm sản phẩm
-        </a>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+                <i class="fas fa-plus me-2"></i>Thêm sản phẩm
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -44,7 +46,9 @@
         <div class="surface-card p-3 h-100">
             <div class="small text-uppercase fw-semibold muted-note mb-2">Thao tác nhanh</div>
             <div class="d-flex gap-2 flex-wrap">
-                <a href="/phamgiahuy/Product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a href="/phamgiahuy/Product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+                <?php endif; ?>
                 <a href="/phamgiahuy/Product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
             </div>
         </div>
@@ -59,7 +63,9 @@
             </div>
             <h4 class="fw-semibold mb-2">Chưa có sản phẩm nào</h4>
             <p class="mb-4">Hãy tạo sản phẩm đầu tiên để bắt đầu quản lý dữ liệu tập trung.</p>
-            <a href="/phamgiahuy/Product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <a href="/phamgiahuy/Product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <style>

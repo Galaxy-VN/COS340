@@ -16,7 +16,9 @@
     <div class="d-flex gap-2">
         <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
         <a href="/phamgiahuy/Product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-cart-shopping me-2"></i>Giỏ hàng<?php if ($cartCount > 0): ?> <span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?></a>
-        <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-dark fw-semibold"><i class="fas fa-pen-to-square me-2"></i>Chỉnh sửa</a>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-dark fw-semibold"><i class="fas fa-pen-to-square me-2"></i>Chỉnh sửa</a>
+        <?php endif; ?>
     </div>
 </div>
 

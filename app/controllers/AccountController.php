@@ -85,6 +85,7 @@ class AccountController
                     session_start();
 
                     $_SESSION['username'] = $account->username;
+                    $_SESSION['role'] = $account->role;
 
                     header('Location: /phamgiahuy/product');
                     exit;
