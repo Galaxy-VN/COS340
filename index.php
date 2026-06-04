@@ -1,6 +1,8 @@
 <?php
 require_once 'app/helpers/SessionHelper.php';
-SessionHelper::init();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once 'app/models/ProductModel.php';
 

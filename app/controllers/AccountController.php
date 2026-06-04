@@ -66,7 +66,11 @@ class AccountController
 
     public function logout()
     {
-        SessionHelper::logout();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION = [];
+        session_destroy();
         header('Location: /phamgiahuy/product');
     }
 
@@ -80,7 +84,12 @@ class AccountController
             if ($account){
                 $pwd_hashed = $account->password;
                 if (password_verify($password, $pwd_hashed)) {
-                    SessionHelper::login($account->id, $account->username, $account->role);
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $_SESSION['user_id'] = $account->id;
+                    $_SESSION['username'] = $account->username;
+                    $_SESSION['role'] = $account->role;
                     header('Location: /phamgiahuy/product');
                     exit;
                 } else {

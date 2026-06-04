@@ -644,7 +644,9 @@
 </head>
 <body>
 <?php
-SessionHelper::init();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $route = trim($_GET['url'] ?? '', '/');
 $routeParts = $route === '' ? [] : explode('/', $route);
 $routeController = isset($routeParts[0]) ? ucfirst(strtolower($routeParts[0])) : '';
