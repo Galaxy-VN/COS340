@@ -705,6 +705,9 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                     <i class="fas fa-receipt"></i>
                 </a>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a href="/phamgiahuy/Product/manageOrders" class="btn btn-glass" title="Quản lý đơn hàng">
+                        <i class="fas fa-tasks"></i>
+                    </a>
                     <a href="/phamgiahuy/Category" class="btn btn-glass" title="Danh mục">
                         <i class="fas fa-folder"></i>
                     </a>
@@ -736,6 +739,9 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                     <a class="nav-link <?php echo $isOrders ? 'active' : ''; ?>" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
                 </li>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/phamgiahuy/Product/manageOrders"><i class="fas fa-tasks me-1"></i> Quản lý đơn hàng</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
                     </li>

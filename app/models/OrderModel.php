@@ -76,4 +76,13 @@ class OrderModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateStatus($orderId, $status)
+    {
+        $query = "UPDATE orders SET status = :status WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':id', $orderId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

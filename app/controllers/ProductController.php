@@ -501,4 +501,50 @@ class ProductController
             echo 'Error deleting product';
         }
     }
+
+    public function manageOrders()
+    {
+        $this->checkAdmin();
+        
+        $rawOrders = $this->orderModel->getOrders();
+        $orders = [];
+        foreach ($rawOrders as $o) {
+            $details = $this->orderModel->getOrderDetails($o['id']);
+            $total = 0;
+            foreach ($details as $d) {
+                $total += $d['price'] * $d['quantity'];
+            }
+            $orders[] = [
+                'id' => $o['id'],
+                'date' => $o['order_date'],
+                'status' => $o['status'] ?? 'pending',
+                'customer' => [
+                    'name' => $o['name'],
+                    'phone' => $o['phone'],
+                    'address' => $o['address']
+                ],
+                'total' => $total
+            ];
+        }
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/manageOrders.php';
+    }
+
+    public function updateOrderStatus()
+    {
+        $this->checkAdmin();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $orderId = (int)($_POST['order_id'] ?? 0);
+            $status = $_POST['status'] ?? 'pending';
+
+            if ($orderId > 0) {
+                if ($this->orderModel->updateStatus($orderId, $status)) {
+                    $this->setFlash('Cập nhật trạng thái đơn hàng #' . $orderId . ' thành công!');
+                } else {
+                    $this->setFlash('Có lỗi xảy ra khi cập nhật trạng thái.', 'danger');
+                }
+            }
+        }
+        $this->redirectTo('/phamgiahuy/Product/manageOrders');
+    }
 }
