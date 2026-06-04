@@ -57,6 +57,7 @@
             line-height: 1.6;
             color: var(--text-main);
             min-height: 100vh;
+            min-height: 100dvh;
             position: relative;
         }
         body::before,
@@ -134,8 +135,6 @@
         .navbar .container-fluid { display:flex; align-items:center; gap:0.75rem; }
         .header-search { flex: 1 1 540px; max-width: 640px; }
         .header-search .form-control { border-radius: 999px; padding: 0.45rem 0.9rem; font-size: 0.95rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: var(--text-main); }
-        .header-actions { display:flex; align-items:center; gap:0.5rem; }
-        .header-actions .btn { padding: 0.42rem 0.6rem; border-radius: 999px; }
         .cart-badge { position: relative; font-size: 0.65rem; top: -8px; left: -8px; }
         @media (max-width: 767.98px) {
             .header-search { display: none; }
@@ -608,6 +607,39 @@
                 transform: translateY(0);
             }
         }
+        html { scroll-behavior: smooth; }
+
+        /* Active nav link: brand accent */
+        .nav-link.active {
+            color: var(--brand-300) !important;
+            opacity: 1;
+        }
+
+        /* Focus ring for keyboard accessibility */
+        .btn-glass:focus-visible,
+        .btn-primary:focus-visible,
+        .navbar .btn-light:focus-visible {
+            outline: 2px solid var(--brand-500);
+            outline-offset: 2px;
+        }
+
+        /* Active/pressed feedback */
+        .btn-glass:active {
+            transform: translateY(0) scale(0.97);
+            background: rgba(255,255,255,0.08);
+            transition-duration: 0.08s;
+        }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.97);
+            transition-duration: 0.08s;
+        }
+        .navbar .btn-light:active {
+            transform: translateY(0) scale(0.97);
+            transition-duration: 0.08s;
+        }
+
+        /* Logout icon: replace inline style */
+        .logout-icon { font-size: 0.8em; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -629,6 +661,11 @@ foreach ($cartItems as $cartItem) {
 $flashMessage = $_SESSION['flash_message'] ?? null;
 $flashType = $_SESSION['flash_type'] ?? 'success';
 unset($_SESSION['flash_message'], $_SESSION['flash_type']);
+$isProduct = $routeController === 'Product';
+$isOrders = $isProduct && $routeAction === 'orders';
+$isCart = $isProduct && $routeAction === 'cart';
+$isCategory = $routeController === 'Category';
+$isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
@@ -646,58 +683,63 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
             </form>
         </div>
 
-        <div class="header-actions ms-auto">
+        <!-- Cart button (always visible) + Hamburger toggler (mobile only) -->
+        <div class="d-flex align-items-center gap-2 ms-auto">
             <button class="btn btn-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer" title="Giỏ hàng">
                 <i class="fas fa-cart-shopping"></i>
                 <?php if ($cartCount > 0): ?>
                     <span class="badge bg-warning text-dark cart-badge"><?php echo $cartCount; ?></span>
                 <?php endif; ?>
             </button>
-            <a href="/phamgiahuy/Product/orders" class="btn btn-glass d-none d-md-inline" title="Đơn hàng">
-                <i class="fas fa-receipt"></i>
-            </a>
-            <a href="/phamgiahuy/Category" class="btn btn-glass d-none d-md-inline" title="Danh mục">
-                <i class="fas fa-folder"></i>
-            </a>
-            <?php if (isset($_SESSION['user'])): ?>
-                <a href="/phamgiahuy/account/logout" class="btn btn-glass d-none d-md-inline" title="Đăng xuất" onclick="return confirm('Bạn muốn đăng xuất?')">
-                    <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?>
-                    <i class="fas fa-right-from-bracket ms-1" style="font-size:0.8em;opacity:0.7;"></i>
-                </a>
-            <?php else: ?>
-                <a href="/phamgiahuy/account/login" class="btn btn-glass d-none d-md-inline" title="Đăng nhập">
-                    <i class="fas fa-right-to-bracket"></i>
-                </a>
-                <a href="/phamgiahuy/account/register" class="btn btn-glass d-none d-md-inline" title="Đăng ký">
-                    <i class="fas fa-user-plus"></i>
-                </a>
-            <?php endif; ?>
-
-            <button class="navbar-toggler ms-2 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
 
-        <div class="collapse navbar-collapse d-md-none" id="navbarNav">
-            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                <li class="nav-item me-2">
-                    <a class="nav-link" href="/phamgiahuy/Product"><i class="fas fa-box me-1"></i> Sản phẩm</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link" href="/phamgiahuy/Product/cart"><i class="fas fa-cart-shopping me-1"></i> Giỏ hàng</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
-                   </div>
+        <!-- Single responsive collapse: desktop icons + mobile text links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Desktop: icon buttons (hidden on mobile) -->
+            <div class="d-none d-md-flex align-items-center gap-2 ms-auto">
+                <a href="/phamgiahuy/Product/orders" class="btn btn-glass" title="Đơn hàng">
+                    <i class="fas fa-receipt"></i>
+                </a>
+                <a href="/phamgiahuy/Category" class="btn btn-glass" title="Danh mục">
+                    <i class="fas fa-folder"></i>
+                </a>
+                <?php if (isset($_SESSION['username'])): ?>
+                    <a href="/phamgiahuy/account/logout" class="btn btn-glass" title="Đăng xuất" onclick="return confirm('Bạn muốn đăng xuất?')">
+                        <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?>
+                        <i class="fas fa-right-from-bracket ms-1 logout-icon"></i>
+                    </a>
+                <?php else: ?>
+                    <a href="/phamgiahuy/account/login" class="btn btn-glass" title="Đăng nhập">
+                        <i class="fas fa-right-to-bracket"></i>
+                    </a>
+                    <a href="/phamgiahuy/account/register" class="btn btn-glass" title="Đăng ký">
+                        <i class="fas fa-user-plus"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <!-- Mobile: text links (hidden on desktop) -->
+            <ul class="navbar-nav d-md-none ms-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $isHome ? 'active' : ''; ?>" href="/phamgiahuy/Product"><i class="fas fa-box me-1"></i> Sản phẩm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
+                    <a class="nav-link <?php echo $isCart ? 'active' : ''; ?>" href="/phamgiahuy/Product/cart"><i class="fas fa-cart-shopping me-1"></i> Giỏ hàng</a>
                 </li>
-                <?php if (isset($_SESSION['user'])): ?>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $isOrders ? 'active' : ''; ?>" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
+                </li>
+                <?php if (isset($_SESSION['username'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/phamgiahuy/account/logout" onclick="return confirm('Bạn muốn đăng xuất?')">
-                            <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?>
-                            <i class="fas fa-right-from-bracket ms-1" style="font-size:0.8em;opacity:0.7;"></i>
+                            <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?>
+                            <i class="fas fa-right-from-bracket ms-1 logout-icon"></i>
                         </a>
                     </li>
                 <?php else: ?>

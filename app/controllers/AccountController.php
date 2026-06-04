@@ -51,7 +51,7 @@ class AccountController
             }
 
             if(count($errors) > 0) {
-                include_once 'app/views/account/register.php'
+                include_once 'app/views/account/register.php';
             }else{
                 $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 

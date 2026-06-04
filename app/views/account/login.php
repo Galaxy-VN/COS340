@@ -23,7 +23,7 @@
                     <i class="fas fa-circle-exclamation me-2"></i><?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
-            <form action="/phamgiahuy/account/login" method="POST">
+            <form action="/phamgiahuy/account/checkLogin" method="POST">
                 <div class="field-card mb-3">
                     <div class="fw-semibold mb-1">Thông tin đăng nhập</div>
                     <div class="muted-note">Nhập tài khoản và mật khẩu đã đăng ký.</div>
