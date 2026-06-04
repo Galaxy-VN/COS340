@@ -4,7 +4,7 @@
 
 <footer class="app-footer text-center py-4 mt-5">
     <div class="container">
-        <p class="mb-0">&copy; <?php echo date('Y'); ?> Quản lý sản phẩm • Thiết kế lại trải nghiệm quản trị</p>
+        <p class="mb-0">&copy; <?php echo date('Y'); ?> COS340 Store • Trải nghiệm mua sắm thiết bị số 3D</p>
     </div>
 </footer>
 

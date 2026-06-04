@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,31 +16,39 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- jQuery DataTables -->
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
     <style>
         :root {
-            /* Liquid Glass Theme */
-            --brand-900: #0f172a;
-            --brand-700: #1e293b;
+            /* Premium Cold Luxury Theme */
+            --brand-900: #020617;
+            --brand-700: #0f172a;
             --brand-500: #3b82f6;
             --brand-300: #93c5fd;
             --accent: #f43f5e;
-            --accent-glow: rgba(244, 63, 94, 0.5);
-            --canvas: #09090b;
-            --paper: rgba(30, 41, 59, 0.45);
-            --paper-strong: rgba(30, 41, 59, 0.7);
-            --line: rgba(255, 255, 255, 0.12);
+            --accent-glow: rgba(244, 63, 94, 0.4);
+            --canvas: #050508;
+            --paper: rgba(15, 23, 42, 0.55);
+            --paper-strong: rgba(15, 23, 42, 0.85);
+            --line: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
             --text-soft: #94a3b8;
             --ok: #10b981;
             --danger: #ef4444;
-            --radius-xl: 32px;
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --shadow-float: 0 32px 64px rgba(0, 0, 0, 0.5);
-            --shadow-soft: 0 16px 32px rgba(0, 0, 0, 0.3);
-            --glass-blur: blur(24px);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.15);
-            --liquid-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-float: 0 32px 64px rgba(0, 0, 0, 0.6);
+            --shadow-soft: 0 16px 32px rgba(0, 0, 0, 0.4);
+            --glass-blur: blur(20px);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --liquid-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         * {
             box-sizing: border-box;
@@ -48,11 +56,11 @@
         body {
             background-color: var(--canvas);
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.25), transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.2), transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.1), transparent 50%);
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.18), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(244, 63, 94, 0.12), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.05), transparent 55%);
             background-attachment: fixed;
-            font-family: 'Noto Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', 'Noto Sans', system-ui, -apple-system, sans-serif;
             font-size: 0.95rem;
             line-height: 1.6;
             color: var(--text-main);
@@ -60,20 +68,17 @@
             min-height: 100dvh;
             position: relative;
         }
-        body::before,
-        body::after {
+        body::before {
             content: '';
             position: fixed;
             pointer-events: none;
             z-index: 0;
-        }
-        body::before {
             inset: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 80%);
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 85%);
         }
         body::after {
             top: -150px;
@@ -670,15 +675,15 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/phamgiahuy/product">
-            <span class="brand-mark"><i class="fas fa-cubes"></i></span>
-            <span>Quản lý sản phẩm</span>
+        <a class="navbar-brand" href="/phamgiahuy">
+            <span class="brand-mark"><i class="ph ph-sparkle"></i></span>
+            <span>COS340 Store</span>
         </a>
 
         <div class="header-search d-none d-md-block">
             <form action="/phamgiahuy/product" method="GET" class="w-100">
                 <div class="input-group">
-                    <input name="q" class="form-control" placeholder="Tìm sản phẩm, mã SP..." value="<?php echo htmlspecialchars($_GET['q'] ?? '') ?>">
+                    <input name="q" class="form-control" placeholder="Tìm sản phẩm, danh mục..." value="<?php echo htmlspecialchars($_GET['q'] ?? '') ?>">
                     <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
                 </div>
             </form>
@@ -701,6 +706,9 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Desktop: icon buttons (hidden on mobile) -->
             <div class="d-none d-md-flex align-items-center gap-2 ms-auto">
+                <a href="/phamgiahuy/product" class="btn btn-glass" title="Cửa hàng">
+                    <i class="fas fa-store"></i>
+                </a>
                 <a href="/phamgiahuy/product/orders" class="btn btn-glass" title="Đơn hàng">
                     <i class="fas fa-receipt"></i>
                 </a>
