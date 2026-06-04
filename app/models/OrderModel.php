@@ -8,15 +8,16 @@ class OrderModel
         $this->conn = $db;
     }
 
-    public function createOrder($name, $phone, $address, $items)
+    public function createOrder($name, $phone, $address, $items, $accountId = null)
     {
         try {
             $this->conn->beginTransaction();
 
-            $stmt = $this->conn->prepare("INSERT INTO orders (name, phone, address) VALUES (:name, :phone, :address)");
+            $stmt = $this->conn->prepare("INSERT INTO orders (name, phone, address, account_id) VALUES (:name, :phone, :address, :account_id)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':phone', $phone);
             $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':account_id', $accountId, $accountId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
             $stmt->execute();
 
             $orderId = $this->conn->lastInsertId();
@@ -44,10 +45,16 @@ class OrderModel
         }
     }
 
-    public function getOrders()
+    public function getOrders($accountId = null)
     {
-        $query = "SELECT * FROM orders ORDER BY order_date DESC";
-        $stmt = $this->conn->prepare($query);
+        if ($accountId !== null) {
+            $query = "SELECT o.*, a.username, a.avatar FROM orders o LEFT JOIN account a ON o.account_id = a.id WHERE o.account_id = :account_id ORDER BY o.order_date DESC";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
+        } else {
+            $query = "SELECT o.*, a.username, a.avatar FROM orders o LEFT JOIN account a ON o.account_id = a.id ORDER BY o.order_date DESC";
+            $stmt = $this->conn->prepare($query);
+        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -68,5 +75,14 @@ class OrderModel
         $stmt->bindParam(':order_id', $orderId);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateStatus($orderId, $status)
+    {
+        $query = "UPDATE orders SET status = :status WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':id', $orderId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }

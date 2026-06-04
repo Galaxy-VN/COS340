@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Thêm danh mục</h1>
         <p class="lead mb-0">Tạo một nhóm sản phẩm mới để phân loại dữ liệu rõ ràng hơn.</p>
     </div>
-    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -25,7 +25,7 @@
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-            <form action="/phamgiahuy/Category/save" method="POST">
+            <form action="/phamgiahuy/category/save" method="POST">
                 <div class="field-card mb-3">
                     <div class="fw-semibold mb-1">Thông tin danh mục</div>
                     <div class="muted-note">Tên danh mục nên ngắn gọn và dễ nhận diện khi lọc sản phẩm.</div>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu</button>
-                    <a href="/phamgiahuy/Category" class="btn btn-outline-secondary">Hủy</a>
+                    <a href="/phamgiahuy/category" class="btn btn-outline-secondary">Hủy</a>
                 </div>
             </form>
         </div>

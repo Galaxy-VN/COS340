@@ -14,12 +14,14 @@
         <p class="lead mb-0">Theo dõi nhanh tồn kho hiển thị, danh mục và giá trong một màn hình trực quan.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="/phamgiahuy/Product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;">
+        <button class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer">
             <i class="fas fa-cart-shopping me-2"></i>Giỏ hàng <?php if ($cartCount > 0): ?><span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?>
-        </a>
-        <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
-            <i class="fas fa-plus me-2"></i>Thêm sản phẩm
-        </a>
+        </button>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <a href="/phamgiahuy/product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+                <i class="fas fa-plus me-2"></i>Thêm sản phẩm
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -44,8 +46,10 @@
         <div class="surface-card p-3 h-100">
             <div class="small text-uppercase fw-semibold muted-note mb-2">Thao tác nhanh</div>
             <div class="d-flex gap-2 flex-wrap">
-                <a href="/phamgiahuy/Product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
-                <a href="/phamgiahuy/Product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a href="/phamgiahuy/product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+                <?php endif; ?>
+                <a href="/phamgiahuy/product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
             </div>
         </div>
     </div>
@@ -59,67 +63,59 @@
             </div>
             <h4 class="fw-semibold mb-2">Chưa có sản phẩm nào</h4>
             <p class="mb-4">Hãy tạo sản phẩm đầu tiên để bắt đầu quản lý dữ liệu tập trung.</p>
-            <a href="/phamgiahuy/Product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <a href="/phamgiahuy/product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+            <?php endif; ?>
         </div>
     <?php else: ?>
-        <div class="table-responsive">
-            <table id="productTable" class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th style="width: 84px;">Ảnh</th>
-                        <th style="width: 70px;">#</th>
-                        <th>Tên</th>
-                        <th>Mô tả</th>
-                        <th style="width: 140px;">Giá</th>
-                        <th style="width: 150px;">Danh mục</th>
-                        <th style="width: 120px;">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($products as $product): ?>
-                        <tr>
-                            <td>
+        <style>
+            .product-grid .card-img-top { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; }
+            .product-card-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .product-card .card-body { padding: 0.65rem; }
+            .product-card .card-footer { background: transparent; border-top: none; padding: 0.5rem 0.65rem; }
+        </style>
+        <div class="product-grid">
+            <div class="row g-3">
+                <?php foreach ($products as $product): ?>
+                    <div class="col-6 col-md-4 col-lg-4">
+                        <div class="surface-card product-card h-100 d-flex flex-column">
+                            <div class="p-2">
                                 <?php if (!empty($product->image) && file_exists('uploads/' . $product->image)): ?>
-                                    <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($product->image); ?>" alt="Ảnh" class="img-thumbnail" width="64" height="64">
+                                    <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($product->image); ?>" alt="<?php echo htmlspecialchars($product->name); ?>" class="card-img-top rounded-3">
                                 <?php else: ?>
-                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 64px; height: 64px; border-radius: 14px;">
-                                        <i class="fas fa-image text-muted"></i>
+                                    <div class="bg-light d-flex align-items-center justify-content-center rounded-3" style="width:100%; height:160px;">
+                                        <i class="fas fa-image text-muted fa-2x"></i>
                                     </div>
                                 <?php endif; ?>
-                            </td>
-                            <td><span class="badge bg-secondary"><?php echo $product->id; ?></span></td>
-                            <td>
-                                <div class="fw-semibold"><?php echo htmlspecialchars($product->name); ?></div>
-                                <div class="small muted-note">Mã SP: #<?php echo $product->id; ?></div>
-                            </td>
-                            <td class="text-muted" style="max-width: 360px;"><?php echo htmlspecialchars($product->description); ?></td>
-                            <td><span class="fw-semibold text-primary"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</span></td>
-                            <td><span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25"><?php echo htmlspecialchars($product->category_name ?? '—'); ?></span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm flex-wrap">
-                                    <form action="/phamgiahuy/Product/addToCart" method="POST" class="d-inline">
-                                        <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <input type="hidden" name="redirect_to" value="/phamgiahuy/Product">
-                                        <button type="submit" class="btn btn-outline-success" title="Thêm vào giỏ">
-                                            <i class="fas fa-cart-plus"></i>
-                                        </button>
-                                    </form>
-                                    <a href="/phamgiahuy/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="/phamgiahuy/Product/delete/<?php echo $product->id; ?>" class="btn btn-outline-danger" onclick="return confirm('Xóa sản phẩm này?')" title="Xóa">
-                                        <i class="fas fa-trash"></i>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-1 product-card-title fw-semibold">
+                                    <a href="/phamgiahuy/product/show/<?php echo $product->id; ?>" class="text-decoration-none text-reset">
+                                        <?php echo htmlspecialchars($product->name); ?>
                                     </a>
                                 </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                <div class="small text-muted mb-2" style="flex:1 1 auto;"><?php echo htmlspecialchars(mb_strimwidth($product->description, 0, 80, '...')); ?></div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="fw-bold text-primary"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <form action="/phamgiahuy/product/addToCart" method="POST" class="m-0">
+                                            <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <input type="hidden" name="redirect_to" value="/phamgiahuy/product">
+                                            <button type="submit" class="btn btn-sm btn-primary" title="Thêm vào giỏ">
+                                                <i class="fas fa-cart-plus"></i>
+                                            </button>
+                                        </form>
+                                        <a href="/phamgiahuy/product/show/<?php echo $product->id; ?>" class="btn btn-sm btn-glass" title="Xem">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     <?php endif; ?>
 </div>

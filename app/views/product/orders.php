@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Lịch sử đơn hàng</h1>
         <p class="lead mb-0">Theo dõi trạng thái và chi tiết các đơn hàng bạn đã mua trước đây.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
         <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua hàng
     </a>
 </div>
@@ -22,7 +22,7 @@
         </div>
         <h3 class="fw-bold mb-2">Bạn chưa có đơn hàng nào</h3>
         <p class="text-muted mb-4 text-center">Hãy thêm các sản phẩm yêu thích vào giỏ hàng và thanh toán nhé.</p>
-        <a href="/phamgiahuy/Product" class="btn btn-primary btn-lg rounded-pill px-5">
+        <a href="/phamgiahuy/product" class="btn btn-primary btn-lg rounded-pill px-5">
             <i class="fas fa-shop me-2"></i>Đi đến cửa hàng
         </a>
     </div>
@@ -60,10 +60,25 @@
                                 <span class="fw-bold text-primary fs-6"><?php echo number_format($order['total'], 0, ',', '.'); ?>đ</span>
                             </td>
                             <td>
-                                <span class="badge bg-warning text-dark border border-warning shadow-sm"><i class="fas fa-clock me-1"></i>Đang xử lý</span>
+                                <?php
+                                $status = $order['status'] ?? 'pending';
+                                if ($status === 'pending') {
+                                    echo '<span class="badge bg-warning text-dark border border-warning shadow-sm"><i class="fas fa-clock me-1"></i>Chờ xử lý</span>';
+                                } elseif ($status === 'processing') {
+                                    echo '<span class="badge bg-info text-dark border border-info shadow-sm"><i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý</span>';
+                                } elseif ($status === 'shipping') {
+                                    echo '<span class="badge bg-primary text-white border border-primary shadow-sm"><i class="fas fa-truck me-1"></i>Đang giao</span>';
+                                } elseif ($status === 'completed') {
+                                    echo '<span class="badge bg-success text-white border border-success shadow-sm"><i class="fas fa-circle-check me-1"></i>Đã hoàn thành</span>';
+                                } elseif ($status === 'cancelled') {
+                                    echo '<span class="badge bg-danger text-white border border-danger shadow-sm"><i class="fas fa-circle-xmark me-1"></i>Đã hủy</span>';
+                                } else {
+                                    echo '<span class="badge bg-secondary">' . htmlspecialchars($status) . '</span>';
+                                }
+                                ?>
                             </td>
                             <td>
-                                <a href="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
+                                <a href="/phamgiahuy/product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
                                     <i class="fas fa-eye me-1"></i>Xem
                                 </a>
                             </td>

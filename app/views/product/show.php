@@ -14,9 +14,11 @@
         <p class="lead mb-0">Xem đầy đủ nội dung, giá và danh mục trước khi quyết định chỉnh sửa.</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
-        <a href="/phamgiahuy/Product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-cart-shopping me-2"></i>Giỏ hàng<?php if ($cartCount > 0): ?> <span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?></a>
-        <a href="/phamgiahuy/Product/edit/<?php echo $product->id; ?>" class="btn btn-dark fw-semibold"><i class="fas fa-pen-to-square me-2"></i>Chỉnh sửa</a>
+        <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+        <a href="/phamgiahuy/product/cart" class="btn btn-warning text-dark fw-semibold shadow-sm position-relative" style="z-index:1;"><i class="fas fa-cart-shopping me-2"></i>Giỏ hàng<?php if ($cartCount > 0): ?> <span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?></a>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <a href="/phamgiahuy/product/edit/<?php echo $product->id; ?>" class="btn btn-dark fw-semibold"><i class="fas fa-pen-to-square me-2"></i>Chỉnh sửa</a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -48,9 +50,9 @@
                         <div class="text-body-emphasis lh-lg"><?php echo nl2br(htmlspecialchars($product->description)); ?></div>
                     </div>
                     <div class="field-card">
-                        <form action="/phamgiahuy/Product/addToCart" method="POST" class="row g-3 align-items-end">
+                        <form action="/phamgiahuy/product/addToCart" method="POST" class="row g-3 align-items-end">
                             <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
-                            <input type="hidden" name="redirect_to" value="/phamgiahuy/Product/show/<?php echo $product->id; ?>">
+                            <input type="hidden" name="redirect_to" value="/phamgiahuy/product/show/<?php echo $product->id; ?>">
                             <div class="col-sm-5">
                                 <label for="quantity" class="form-label fw-semibold">Số lượng</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" step="1">
@@ -59,7 +61,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-cart-plus me-1"></i>Thêm vào giỏ
                                 </button>
-                                <a href="/phamgiahuy/Product/cart" class="btn btn-outline-primary">
+                                <a href="/phamgiahuy/product/cart" class="btn btn-outline-primary">
                                     <i class="fas fa-bag-shopping me-1"></i>Xem giỏ
                                 </a>
                             </div>

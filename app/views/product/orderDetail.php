@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Chi tiết đơn hàng #<?php echo htmlspecialchars($order['id']); ?></h1>
         <p class="lead mb-0">Đặt lúc <?php echo date('H:i d/m/Y', strtotime($order['date'])); ?> - Trạng thái: Đang xử lý</p>
     </div>
-    <a href="/phamgiahuy/Product/orders" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
+    <a href="/phamgiahuy/product/orders" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
         <i class="fas fa-arrow-left me-2"></i>Trở lại danh sách
     </a>
 </div>
@@ -76,7 +76,7 @@
                                         <div>
                                             <div class="fw-bold text-wrap">
                                                 <?php if (!empty($item['product_id'])): ?>
-                                                    <a href="/phamgiahuy/Product/show/<?php echo (int)$item['product_id']; ?>" class="text-decoration-none text-reset">
+                                                    <a href="/phamgiahuy/product/show/<?php echo (int)$item['product_id']; ?>" class="text-decoration-none text-reset">
                                                         <?php echo htmlspecialchars($item['name']); ?>
                                                     </a>
                                                 <?php else: ?>
@@ -95,16 +95,16 @@
                                     <td colspan="4" class="ps-0 pb-3">
                                         <div class="d-flex align-items-center gap-2">
                                             <?php if (!empty($item['product_id'])): ?>
-                                                <form action="/phamgiahuy/Product/addToCart" method="POST" class="d-inline">
+                                                <form action="/phamgiahuy/product/addToCart" method="POST" class="d-inline">
                                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                                     <input type="hidden" name="quantity" value="1">
-                                                    <input type="hidden" name="redirect_to" value="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>">
+                                                    <input type="hidden" name="redirect_to" value="/phamgiahuy/product/orderDetail/<?php echo urlencode($order['id']); ?>">
                                                     <button type="submit" class="btn btn-sm btn-glass">
                                                         <i class="fas fa-cart-plus"></i>
                                                         Mua lại
                                                     </button>
                                                 </form>
-                                                <a href="/phamgiahuy/Product/show/<?php echo (int)$item['product_id']; ?>" class="btn btn-sm btn-glass">
+                                                <a href="/phamgiahuy/product/show/<?php echo (int)$item['product_id']; ?>" class="btn btn-sm btn-glass">
                                                     <i class="fas fa-eye"></i>
                                                     Xem chi tiết
                                                 </a>

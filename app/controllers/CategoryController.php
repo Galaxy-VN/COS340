@@ -38,7 +38,7 @@ class CategoryController
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/category/add.php';
             } else {
-                header('Location: /phamgiahuy/Category');
+                header('Location: /phamgiahuy/category');
                 exit;
             }
         }
@@ -69,7 +69,7 @@ class CategoryController
             $edit = $this->categoryModel->updateCategory($id, $name, $description);
 
             if ($edit) {
-                header('Location: /phamgiahuy/Category');
+                header('Location: /phamgiahuy/category');
                 exit;
             } else {
                 echo 'Error updating category';
@@ -84,7 +84,7 @@ class CategoryController
             return;
         }
         if ($this->categoryModel->deleteCategory($id)) {
-            header('Location: /phamgiahuy/Category');
+            header('Location: /phamgiahuy/category');
             exit;
         } else {
             echo 'Error deleting category';

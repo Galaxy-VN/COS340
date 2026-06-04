@@ -9,10 +9,10 @@
     <p class="text-muted mb-4">Mã đơn hàng của bạn: <strong>#<?php echo htmlspecialchars($order['id']); ?></strong></p>
 
     <div class="d-flex justify-content-center gap-3">
-        <a href="/phamgiahuy/Product" class="btn btn-primary btn-lg rounded-pill">
+        <a href="/phamgiahuy/product" class="btn btn-primary btn-lg rounded-pill">
             <i class="fas fa-arrow-left me-2"></i>Quay về cửa hàng
         </a>
-        <a href="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-outline-primary btn-lg rounded-pill">
+        <a href="/phamgiahuy/product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-outline-primary btn-lg rounded-pill">
             <i class="fas fa-eye me-2"></i>Xem chi tiết đơn hàng
         </a>
     </div>

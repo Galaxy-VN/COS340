@@ -14,10 +14,10 @@
         <p class="lead mb-0">Theo dõi số lượng, điều chỉnh nhanh và kiểm tra tổng giá trị ngay trên một màn hình.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+        <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
             <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua
         </a>
-        <form action="/phamgiahuy/Product/clearCart" method="POST" class="d-inline">
+        <form action="/phamgiahuy/product/clearCart" method="POST" class="d-inline">
             <button type="submit" class="btn btn-outline-light fw-semibold" onclick="return confirm('Xóa toàn bộ giỏ hàng?')">
                 <i class="fas fa-trash-can me-2"></i>Xóa giỏ
             </button>
@@ -32,7 +32,7 @@
         </div>
         <h3 class="fw-bold mb-2">Giỏ hàng đang trống</h3>
         <p class="muted-note mb-4">Hãy thêm vài sản phẩm vào giỏ để bắt đầu đặt hàng.</p>
-        <a href="/phamgiahuy/Product" class="btn btn-primary">
+        <a href="/phamgiahuy/product" class="btn btn-primary">
             <i class="fas fa-box me-2"></i>Đi đến danh sách sản phẩm
         </a>
     </div>
@@ -40,7 +40,7 @@
     <div class="row g-3">
         <div class="col-lg-8">
             <div class="surface-card p-3 p-lg-4">
-                <form action="/phamgiahuy/Product/updateCart" method="POST">
+                <form action="/phamgiahuy/product/updateCart" method="POST">
                     <div class="d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
                         <div>
                             <div class="small text-uppercase fw-semibold muted-note">Sản phẩm trong giỏ</div>
@@ -51,50 +51,35 @@
                         </button>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th style="width: 130px;">Đơn giá</th>
-                                    <th style="width: 130px;">Số lượng</th>
-                                    <th style="width: 140px;">Thành tiền</th>
-                                    <th style="width: 90px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($items as $item): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="rounded-4 overflow-hidden bg-light d-flex align-items-center justify-content-center" style="width: 76px; height: 76px; flex: 0 0 auto;">
-                                                    <?php if (!empty($item['image'])): ?>
-                                                        <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($item['image']); ?>" alt="Ảnh sản phẩm" class="w-100 h-100" style="object-fit: cover;">
-                                                    <?php else: ?>
-                                                        <i class="fas fa-image text-muted"></i>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold"><?php echo htmlspecialchars($item['name']); ?></div>
-                                                    <div class="small muted-note">Mã #<?php echo $item['id']; ?></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="fw-semibold text-primary"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</td>
-                                        <td>
-                                            <input type="number" class="form-control" name="quantity[<?php echo $item['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="0" step="1">
-                                            <div class="small muted-note mt-1">Nhập 0 để xóa</div>
-                                        </td>
-                                        <td class="fw-bold"><?php echo number_format($item['line_total'], 0, ',', '.'); ?>đ</td>
-                                        <td>
-                                            <a href="/phamgiahuy/Product/removeFromCart/<?php echo $item['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Xóa sản phẩm này khỏi giỏ?')">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                    <div class="list-group">
+                        <?php foreach ($items as $item): ?>
+                            <div class="list-group-item d-flex gap-3 align-items-center">
+                                <div style="width:76px; height:76px; flex-shrink:0;">
+                                    <?php if (!empty($item['image'])): ?>
+                                        <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($item['image']); ?>" class="img-thumbnail" style="width:76px; height:76px; object-fit:cover; border-radius:10px;">
+                                    <?php else: ?>
+                                        <div class="bg-light d-flex align-items-center justify-content-center rounded-2" style="width:76px; height:76px;"><i class="fas fa-image text-muted"></i></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="flex:1 1 auto; min-width:0;">
+                                    <div class="fw-semibold text-truncate"><?php echo htmlspecialchars($item['name']); ?></div>
+                                    <div class="small text-muted">Mã #<?php echo $item['id']; ?></div>
+                                </div>
+                                <div style="width:160px;">
+                                    <label class="small text-muted d-block mb-1">Số lượng</label>
+                                    <input type="number" class="form-control form-control-sm" name="quantity[<?php echo $item['id']; ?>]" value="<?php echo $item['quantity']; ?>" min="0" step="1">
+                                </div>
+                                <div style="width:120px; text-align:right;">
+                                    <div class="fw-bold"><?php echo number_format($item['line_total'], 0, ',', '.'); ?>đ</div>
+                                    <div class="small text-muted"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</div>
+                                </div>
+                                <div>
+                                    <a href="/phamgiahuy/product/removeFromCart/<?php echo $item['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Xóa sản phẩm này khỏi giỏ?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </form>
             </div>
@@ -119,10 +104,10 @@
                 </div>
 
                 <div class="d-grid gap-2">
-                    <a href="/phamgiahuy/Product" class="btn btn-outline-secondary">
+                    <a href="/phamgiahuy/product" class="btn btn-outline-secondary">
                         <i class="fas fa-bag-shopping me-2"></i>Tiếp tục chọn hàng
                     </a>
-                    <a href="/phamgiahuy/Product/checkout" class="btn btn-primary">
+                    <a href="/phamgiahuy/product/checkout" class="btn btn-primary">
                         <i class="fas fa-credit-card me-2"></i>Thanh toán
                     </a>
                 </div>
@@ -136,7 +121,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const form = document.querySelector('form[action="/phamgiahuy/Product/updateCart"]');
+    const form = document.querySelector('form[action="/phamgiahuy/product/updateCart"]');
     if (!form) return;
     let timer = null;
     const inputs = form.querySelectorAll('input[name^="quantity"]');

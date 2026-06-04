@@ -22,14 +22,22 @@ class ProductController
         $this->orderModel = new OrderModel($this->db);
     }
 
+    private function getCartKey(): string
+    {
+        $username = $_SESSION['username'] ?? 'guest';
+        return 'cart_' . $username;
+    }
+
     private function getCart(): array
     {
-        return $_SESSION['cart'] ?? [];
+        $key = $this->getCartKey();
+        return $_SESSION[$key] ?? [];
     }
 
     private function saveCart(array $cart): void
     {
-        $_SESSION['cart'] = $cart;
+        $key = $this->getCartKey();
+        $_SESSION[$key] = $cart;
     }
 
     private function getCartCount(): int
@@ -52,6 +60,8 @@ class ProductController
         header('Location: ' . $path);
         exit;
     }
+
+
 
     public function index()
     {
@@ -125,7 +135,7 @@ class ProductController
     public function addToCart()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $productId = (int) ($_POST['product_id'] ?? 0);
@@ -135,7 +145,7 @@ class ProductController
         $product = $this->productModel->getProductById($productId);
         if (!$product) {
             $this->setFlash('Sản phẩm không tồn tại.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $cart = $this->getCart();
@@ -154,14 +164,14 @@ class ProductController
         $this->saveCart($cart);
         $this->setFlash('Đã thêm sản phẩm vào giỏ hàng.');
 
-        $redirectTo = $_POST['redirect_to'] ?? '/phamgiahuy/Product/cart';
+        $redirectTo = $_POST['redirect_to'] ?? '/phamgiahuy/product/cart';
         $this->redirectTo($redirectTo);
     }
 
     public function updateCart()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product/cart');
+            $this->redirectTo('/phamgiahuy/product/cart');
         }
 
         $quantities = $_POST['quantity'] ?? [];
@@ -183,7 +193,7 @@ class ProductController
 
         $this->saveCart($cart);
         $this->setFlash('Đã cập nhật giỏ hàng.');
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
     public function removeFromCart($id)
@@ -197,14 +207,14 @@ class ProductController
             $this->setFlash('Đã xóa sản phẩm khỏi giỏ hàng.');
         }
 
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
     public function clearCart()
     {
         $this->saveCart([]);
         $this->setFlash('Đã xóa toàn bộ giỏ hàng.');
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
 
@@ -213,7 +223,7 @@ class ProductController
         $cart = $this->getCart();
         if (empty($cart)) {
             $this->setFlash('Giỏ hàng trống.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/cart');
+            $this->redirectTo('/phamgiahuy/product/cart');
         }
 
         $items = [];
@@ -241,18 +251,18 @@ class ProductController
     public function processCheckout()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
         $cart = $this->getCart();
         if (empty($cart)) {
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
         $name = $_POST['name'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $address = $_POST['address'] ?? '';
         if (empty($name) || empty($phone) || empty($address)) {
             $this->setFlash('Vui lòng điền đầy đủ thông tin.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
         $items = [];
         foreach ($cart as $productId => $item) {
@@ -266,14 +276,16 @@ class ProductController
                 'quantity' => $qty
             ];
         }
-        $orderId = $this->orderModel->createOrder($name, $phone, $address, $items);
+        $accountId = $_SESSION['user_id'] ?? null;
+        $orderId = $this->orderModel->createOrder($name, $phone, $address, $items, $accountId);
         if ($orderId) {
             $this->saveCart([]);
+            $_SESSION['last_order_id'] = $orderId;
             $this->setFlash('Đặt hàng thành công! Mã đơn hàng: #' . $orderId, 'success');
-            $this->redirectTo('/phamgiahuy/Product/confirm/' . $orderId);
+            $this->redirectTo('/phamgiahuy/product/confirm/' . $orderId);
         } else {
             $this->setFlash('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
     }
 
@@ -282,7 +294,16 @@ class ProductController
         $order = $this->orderModel->getOrderById($id);
         if (!$order) {
             $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
+        }
+
+        $isLastPlaced = isset($_SESSION['last_order_id']) && $_SESSION['last_order_id'] == $id;
+        $isOwner = isset($_SESSION['user_id']) && $order['account_id'] == $_SESSION['user_id'];
+        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+        if (!$isAdmin && !$isOwner && !$isLastPlaced) {
+            $this->setFlash('Bạn không có quyền xem trang này.', 'danger');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $orderDetails = $this->orderModel->getOrderDetails($id);
@@ -292,7 +313,11 @@ class ProductController
 
     public function orders()
     {
-        $rawOrders = $this->orderModel->getOrders();
+        $accountId = null;
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            $accountId = $_SESSION['user_id'] ?? -1;
+        }
+        $rawOrders = $this->orderModel->getOrders($accountId);
         $orders = [];
         foreach ($rawOrders as $o) {
             $details = $this->orderModel->getOrderDetails($o['id']);
@@ -304,6 +329,7 @@ class ProductController
                 'id' => $o['id'],
                 'date' => $o['order_date'],
                 'status' => $o['status'] ?? 'pending',
+                'username' => $o['username'] ?? null,
                 'customer' => [
                     'name' => $o['name'],
                     'phone' => $o['phone'],
@@ -321,8 +347,17 @@ class ProductController
         $order = $this->orderModel->getOrderById($id);
         if (!$order) {
             $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/orders');
+            $this->redirectTo('/phamgiahuy/product/orders');
         }
+
+        $isOwner = isset($_SESSION['user_id']) && $order['account_id'] == $_SESSION['user_id'];
+        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+        if (!$isAdmin && !$isOwner) {
+            $this->setFlash('Bạn không có quyền xem chi tiết đơn hàng này.', 'danger');
+            $this->redirectTo('/phamgiahuy/product/orders');
+        }
+
         $orderDetails = $this->orderModel->getOrderDetails($id);
         $order['items'] = [];
         $order['total'] = 0;
@@ -382,7 +417,7 @@ class ProductController
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/product/add.php';
             } else {
-                header('Location: /phamgiahuy/Product');
+                header('Location: /phamgiahuy/product');
                 exit;
             }
         }
@@ -436,7 +471,7 @@ class ProductController
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/product/edit.php';
             } elseif ($edit) {
-                header('Location: /phamgiahuy/Product');
+                header('Location: /phamgiahuy/product');
                 exit;
             } else {
                 echo 'Error updating product';
@@ -451,10 +486,54 @@ class ProductController
             return;
         }
         if ($this->productModel->deleteProduct($id)) {
-            header('Location: /phamgiahuy/Product');
+            header('Location: /phamgiahuy/product');
             exit;
         } else {
             echo 'Error deleting product';
         }
+    }
+
+    public function manageOrders()
+    {
+        $rawOrders = $this->orderModel->getOrders();
+        $orders = [];
+        foreach ($rawOrders as $o) {
+            $details = $this->orderModel->getOrderDetails($o['id']);
+            $total = 0;
+            foreach ($details as $d) {
+                $total += $d['price'] * $d['quantity'];
+            }
+            $orders[] = [
+                'id' => $o['id'],
+                'date' => $o['order_date'],
+                'status' => $o['status'] ?? 'pending',
+                'username' => $o['username'] ?? null,
+                'customer' => [
+                    'name' => $o['name'],
+                    'phone' => $o['phone'],
+                    'address' => $o['address']
+                ],
+                'total' => $total
+            ];
+        }
+        $cartCount = $this->getCartCount();
+        include 'app/views/product/manageOrders.php';
+    }
+
+    public function updateOrderStatus()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $orderId = (int)($_POST['order_id'] ?? 0);
+            $status = $_POST['status'] ?? 'pending';
+
+            if ($orderId > 0) {
+                if ($this->orderModel->updateStatus($orderId, $status)) {
+                    $this->setFlash('Cập nhật trạng thái đơn hàng #' . $orderId . ' thành công!');
+                } else {
+                    $this->setFlash('Có lỗi xảy ra khi cập nhật trạng thái.', 'danger');
+                }
+            }
+        }
+        $this->redirectTo('/phamgiahuy/product/manageOrders');
     }
 }
