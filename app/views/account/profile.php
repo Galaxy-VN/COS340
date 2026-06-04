@@ -101,7 +101,10 @@
                 <input type="hidden" name="action_type" value="update_password">
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Mật khẩu hiện tại *</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label fw-semibold mb-0">Mật khẩu hiện tại *</label>
+                        <a href="/phamgiahuy/account/forgotPassword?action=reset" class="text-soft fs-7 text-decoration-none"><i class="fas fa-circle-question me-1"></i>Quên mật khẩu hiện tại?</a>
+                    </div>
                     <input type="password" name="current_password" class="form-control" required placeholder="Nhập mật khẩu đang sử dụng">
                 </div>
 

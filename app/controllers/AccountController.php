@@ -280,6 +280,12 @@ class AccountController
             unset($_SESSION['recovery_step'], $_SESSION['recovery_username'], $_SESSION['recovery_error']);
         }
 
+        // Auto-fill and skip to Step 2 if user is logged in and recovery hasn't started yet
+        if (!isset($_SESSION['recovery_username']) && isset($_SESSION['username'])) {
+            $_SESSION['recovery_username'] = $_SESSION['username'];
+            $_SESSION['recovery_step'] = 2;
+        }
+
         // Initialize recovery session if not set
         if (!isset($_SESSION['recovery_step'])) {
             $_SESSION['recovery_step'] = 1;
