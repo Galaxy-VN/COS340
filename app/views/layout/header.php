@@ -653,7 +653,8 @@ $routeController = $routeParts[0] ?? '';
 $routeAction = $routeParts[1] ?? 'index';
 $showSidebar = $routeController === 'Product' && in_array($routeAction, ['index', 'category'], true);
 $sidebarCategories = $categories ?? [];
-$cartItems = $_SESSION['cart'] ?? [];
+$cartUsername = $_SESSION['username'] ?? 'guest';
+$cartItems = $_SESSION['cart_' . $cartUsername] ?? [];
 $cartCount = 0;
 foreach ($cartItems as $cartItem) {
     $cartCount += (int) ($cartItem['quantity'] ?? 0);

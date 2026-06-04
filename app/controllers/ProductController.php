@@ -22,14 +22,22 @@ class ProductController
         $this->orderModel = new OrderModel($this->db);
     }
 
+    private function getCartKey(): string
+    {
+        $username = $_SESSION['username'] ?? 'guest';
+        return 'cart_' . $username;
+    }
+
     private function getCart(): array
     {
-        return $_SESSION['cart'] ?? [];
+        $key = $this->getCartKey();
+        return $_SESSION[$key] ?? [];
     }
 
     private function saveCart(array $cart): void
     {
-        $_SESSION['cart'] = $cart;
+        $key = $this->getCartKey();
+        $_SESSION[$key] = $cart;
     }
 
     private function getCartCount(): int
@@ -273,9 +281,11 @@ class ProductController
                 'quantity' => $qty
             ];
         }
-        $orderId = $this->orderModel->createOrder($name, $phone, $address, $items);
+        $accountId = $_SESSION['user_id'] ?? null;
+        $orderId = $this->orderModel->createOrder($name, $phone, $address, $items, $accountId);
         if ($orderId) {
             $this->saveCart([]);
+            $_SESSION['last_order_id'] = $orderId;
             $this->setFlash('Đặt hàng thành công! Mã đơn hàng: #' . $orderId, 'success');
             $this->redirectTo('/phamgiahuy/Product/confirm/' . $orderId);
         } else {
@@ -292,6 +302,15 @@ class ProductController
             $this->redirectTo('/phamgiahuy/Product');
         }
 
+        $isLastPlaced = isset($_SESSION['last_order_id']) && $_SESSION['last_order_id'] == $id;
+        $isOwner = isset($_SESSION['user_id']) && $order['account_id'] == $_SESSION['user_id'];
+        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+        if (!$isAdmin && !$isOwner && !$isLastPlaced) {
+            $this->setFlash('Bạn không có quyền xem trang này.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product');
+        }
+
         $orderDetails = $this->orderModel->getOrderDetails($id);
         $cartCount = $this->getCartCount();
         include 'app/views/product/confirm.php';
@@ -299,7 +318,11 @@ class ProductController
 
     public function orders()
     {
-        $rawOrders = $this->orderModel->getOrders();
+        $accountId = null;
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            $accountId = $_SESSION['user_id'] ?? -1;
+        }
+        $rawOrders = $this->orderModel->getOrders($accountId);
         $orders = [];
         foreach ($rawOrders as $o) {
             $details = $this->orderModel->getOrderDetails($o['id']);
@@ -330,6 +353,15 @@ class ProductController
             $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
             $this->redirectTo('/phamgiahuy/Product/orders');
         }
+
+        $isOwner = isset($_SESSION['user_id']) && $order['account_id'] == $_SESSION['user_id'];
+        $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+        if (!$isAdmin && !$isOwner) {
+            $this->setFlash('Bạn không có quyền xem chi tiết đơn hàng này.', 'danger');
+            $this->redirectTo('/phamgiahuy/Product/orders');
+        }
+
         $orderDetails = $this->orderModel->getOrderDetails($id);
         $order['items'] = [];
         $order['total'] = 0;

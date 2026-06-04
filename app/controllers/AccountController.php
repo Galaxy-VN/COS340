@@ -68,6 +68,7 @@ class AccountController
     {
         unset($_SESSION['username']);
         unset($_SESSION['role']);
+        unset($_SESSION['user_id']);
         
         header('Location: /phamgiahuy/product');
     }
@@ -86,6 +87,7 @@ class AccountController
 
                     $_SESSION['username'] = $account->username;
                     $_SESSION['role'] = $account->role;
+                    $_SESSION['user_id'] = $account->id;
 
                     header('Location: /phamgiahuy/product');
                     exit;
