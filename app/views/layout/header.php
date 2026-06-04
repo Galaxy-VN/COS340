@@ -713,9 +713,18 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                     </a>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['username'])): ?>
+                    <a href="/phamgiahuy/account/profile" class="btn btn-glass d-inline-flex align-items-center gap-2" title="Hồ sơ cá nhân">
+                        <?php if (!empty($_SESSION['avatar']) && file_exists('uploads/' . $_SESSION['avatar'])): ?>
+                            <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($_SESSION['avatar']); ?>" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover;">
+                        <?php else: ?>
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                <?php echo strtoupper(substr($_SESSION['username'], 0, 2)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <span><?php echo htmlspecialchars($_SESSION['fullname'] ?? $_SESSION['username']); ?></span>
+                    </a>
                     <a href="/phamgiahuy/account/logout" class="btn btn-glass" title="Đăng xuất" onclick="return confirm('Bạn muốn đăng xuất?')">
-                        <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?>
-                        <i class="fas fa-right-from-bracket ms-1 logout-icon"></i>
+                        <i class="fas fa-right-from-bracket logout-icon"></i>
                     </a>
                 <?php else: ?>
                     <a href="/phamgiahuy/account/login" class="btn btn-glass" title="Đăng nhập">
@@ -748,9 +757,20 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                 <?php endif; ?>
                 <?php if (isset($_SESSION['username'])): ?>
                     <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2" href="/phamgiahuy/account/profile">
+                            <?php if (!empty($_SESSION['avatar']) && file_exists('uploads/' . $_SESSION['avatar'])): ?>
+                                <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($_SESSION['avatar']); ?>" class="rounded-circle" style="width: 20px; height: 20px; object-fit: cover;">
+                            <?php else: ?>
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 20px; height: 20px; font-size: 0.65rem;">
+                                    <?php echo strtoupper(substr($_SESSION['username'], 0, 2)); ?>
+                                </div>
+                            <?php endif; ?>
+                            <span>Hồ sơ: <?php echo htmlspecialchars($_SESSION['fullname'] ?? $_SESSION['username']); ?></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/phamgiahuy/account/logout" onclick="return confirm('Bạn muốn đăng xuất?')">
-                            <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?>
-                            <i class="fas fa-right-from-bracket ms-1 logout-icon"></i>
+                            <i class="fas fa-right-from-bracket me-1"></i> Đăng xuất
                         </a>
                     </li>
                 <?php else: ?>

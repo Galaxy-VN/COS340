@@ -34,6 +34,20 @@ if ($requiresAdmin && !SessionHelper::isAdmin()) {
     exit;
 }
 
+// Kiểm tra yêu cầu đăng nhập đối với một số chức năng (ví dụ: hồ sơ cá nhân)
+$requiresLogin = false;
+$loginActions = [
+    'AccountController' => ['profile', 'updateprofile']
+];
+if (isset($loginActions[$controllerName]) && in_array($action, $loginActions[$controllerName])) {
+    $requiresLogin = true;
+}
+
+if ($requiresLogin && !SessionHelper::isLoggedIn()) {
+    header('Location: /phamgiahuy/account/login');
+    exit;
+}
+
 // Kiểm tra xem file controller có tồn tại không
 if (!file_exists('app/controllers/' . $controllerName . '.php')) {
     die('Controller not found');

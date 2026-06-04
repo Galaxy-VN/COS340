@@ -40,4 +40,38 @@ class AccountModel
         return false;
     }
 
+    public function getAccountById($id)
+    {
+        $query = "SELECT * FROM account WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function updateAccount($id, $fullname, $avatar)
+    {
+        $query = "UPDATE " . $this->table_name . " SET fullname = :fullname, avatar = :avatar WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        $fullname = htmlspecialchars(strip_tags($fullname));
+        $avatar = htmlspecialchars(strip_tags($avatar));
+
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':avatar', $avatar);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function updatePassword($id, $hashedPassword)
+    {
+        $query = "UPDATE " . $this->table_name . " SET password = :password WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }

@@ -53,7 +53,16 @@
                             </td>
                             <td>
                                 <?php if (!empty($order['username'])): ?>
-                                    <span class="fw-semibold text-light"><i class="fas fa-user-circle me-1 text-soft"></i><?php echo htmlspecialchars($order['username']); ?></span>
+                                    <span class="d-inline-flex align-items-center gap-2">
+                                        <?php if (!empty($order['avatar']) && file_exists('uploads/' . $order['avatar'])): ?>
+                                            <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($order['avatar']); ?>" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover;">
+                                        <?php else: ?>
+                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                                <?php echo strtoupper(substr($order['username'], 0, 2)); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <span class="fw-semibold text-light"><?php echo htmlspecialchars($order['username']); ?></span>
+                                    </span>
                                 <?php else: ?>
                                     <span class="badge bg-secondary bg-opacity-25 text-soft border border-secondary border-opacity-25"><i class="fas fa-user-secret me-1"></i>Khách vãng lai</span>
                                 <?php endif; ?>
