@@ -660,11 +660,9 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
                 <i class="fas fa-folder"></i>
             </a>
             <?php if (isset($_SESSION['user'])): ?>
-                <span class="btn-glass d-none d-md-inline" style="cursor:default;">
+                <a href="/phamgiahuy/account/logout" class="btn btn-glass d-none d-md-inline" title="Đăng xuất" onclick="return confirm('Bạn muốn đăng xuất?')">
                     <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?>
-                </span>
-                <a href="/phamgiahuy/account/logout" class="btn btn-glass d-none d-md-inline" title="Đăng xuất">
-                    <i class="fas fa-right-from-bracket"></i>
+                    <i class="fas fa-right-from-bracket ms-1" style="font-size:0.8em;opacity:0.7;"></i>
                 </a>
             <?php else: ?>
                 <a href="/phamgiahuy/account/login" class="btn btn-glass d-none d-md-inline" title="Đăng nhập">
@@ -697,10 +695,10 @@ unset($_SESSION['flash_message'], $_SESSION['flash_type']);
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item">
-                        <span class="nav-link" style="opacity:1;"><i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?></span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/phamgiahuy/account/logout"><i class="fas fa-right-from-bracket me-1"></i> Đăng xuất</a>
+                        <a class="nav-link" href="/phamgiahuy/account/logout" onclick="return confirm('Bạn muốn đăng xuất?')">
+                            <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['user']->username ?? 'User'); ?>
+                            <i class="fas fa-right-from-bracket ms-1" style="font-size:0.8em;opacity:0.7;"></i>
+                        </a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
