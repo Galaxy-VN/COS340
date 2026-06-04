@@ -70,7 +70,7 @@ class AccountController
         unset($_SESSION['role']);
         unset($_SESSION['user_id']);
         
-        header('Location: /phamgiahuy/product');
+        header('Location: /phamgiahuy/Product');
     }
 
     public function checkLogin()
@@ -89,7 +89,7 @@ class AccountController
                     $_SESSION['role'] = $account->role;
                     $_SESSION['user_id'] = $account->id;
 
-                    header('Location: /phamgiahuy/product');
+                    header('Location: /phamgiahuy/Product');
                     exit;
                 } else {
                     $error = "Mật khẩu không chính xác.";

@@ -29,12 +29,14 @@
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 10%">Mã Đơn</th>
-                        <th style="width: 15%">Ngày đặt</th>
-                        <th style="width: 25%">Khách hàng</th>
-                        <th style="width: 15%">Tổng tiền</th>
-                        <th style="width: 20%">Trạng thái</th>
-                        <th style="width: 15%">Thao tác</th>
+                        <th style="width: 8%">Mã Đơn</th>
+                        <th style="width: 12%">Ngày đặt</th>
+                        <th style="width: 15%">Tài khoản</th>
+                        <th style="width: 17%">Người nhận</th>
+                        <th style="width: 22%">Địa chỉ giao</th>
+                        <th style="width: 11%">Tổng tiền</th>
+                        <th style="width: 15%">Trạng thái</th>
+                        <th style="width: 10%">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,10 +52,19 @@
                                 <div class="small text-muted"><?php echo date('H:i:s', strtotime($order['date'])); ?></div>
                             </td>
                             <td>
-                                <div class="fw-bold"><?php echo htmlspecialchars($order['customer']['name']); ?></div>
-                                <div class="small text-muted mb-1"><i class="fas fa-phone fa-xs me-1"></i><?php echo htmlspecialchars($order['customer']['phone']); ?></div>
-                                <div class="small text-soft text-truncate" style="max-width: 250px;" title="<?php echo htmlspecialchars($order['customer']['address']); ?>">
-                                    <i class="fas fa-location-dot fa-xs me-1"></i><?php echo htmlspecialchars($order['customer']['address']); ?>
+                                <?php if (!empty($order['username'])): ?>
+                                    <span class="fw-semibold text-light"><i class="fas fa-user-circle me-1 text-soft"></i><?php echo htmlspecialchars($order['username']); ?></span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary bg-opacity-25 text-soft border border-secondary border-opacity-25"><i class="fas fa-user-secret me-1"></i>Khách vãng lai</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-main"><?php echo htmlspecialchars($order['customer']['name']); ?></div>
+                                <div class="small text-muted"><i class="fas fa-phone fa-xs me-1"></i><?php echo htmlspecialchars($order['customer']['phone']); ?></div>
+                            </td>
+                            <td>
+                                <div class="small text-soft text-wrap" style="max-height: 60px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" title="<?php echo htmlspecialchars($order['customer']['address']); ?>">
+                                    <i class="fas fa-location-dot fa-xs me-1 text-muted"></i><?php echo htmlspecialchars($order['customer']['address']); ?>
                                 </div>
                             </td>
                             <td>
@@ -62,7 +73,7 @@
                             <td>
                                 <form action="/phamgiahuy/Product/updateOrderStatus" method="POST" class="m-0">
                                     <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                                    <select name="status" class="form-select form-select-sm fw-semibold" onchange="this.form.submit()" style="max-width: 180px; background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15);">
+                                    <select name="status" class="form-select form-select-sm fw-semibold" onchange="this.form.submit()" style="max-width: 170px; background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15);">
                                         <option value="pending" class="text-dark" <?php echo $order['status'] === 'pending' ? 'selected' : ''; ?>>⏳ Chờ xử lý</option>
                                         <option value="processing" class="text-dark" <?php echo $order['status'] === 'processing' ? 'selected' : ''; ?>>⚙️ Đang xử lý</option>
                                         <option value="shipping" class="text-dark" <?php echo $order['status'] === 'shipping' ? 'selected' : ''; ?>>🚚 Đang giao hàng</option>

@@ -334,6 +334,7 @@ class ProductController
                 'id' => $o['id'],
                 'date' => $o['order_date'],
                 'status' => $o['status'] ?? 'pending',
+                'username' => $o['username'] ?? null,
                 'customer' => [
                     'name' => $o['name'],
                     'phone' => $o['phone'],
@@ -518,6 +519,7 @@ class ProductController
                 'id' => $o['id'],
                 'date' => $o['order_date'],
                 'status' => $o['status'] ?? 'pending',
+                'username' => $o['username'] ?? null,
                 'customer' => [
                     'name' => $o['name'],
                     'phone' => $o['phone'],

@@ -48,11 +48,11 @@ class OrderModel
     public function getOrders($accountId = null)
     {
         if ($accountId !== null) {
-            $query = "SELECT * FROM orders WHERE account_id = :account_id ORDER BY order_date DESC";
+            $query = "SELECT o.*, a.username FROM orders o LEFT JOIN account a ON o.account_id = a.id WHERE o.account_id = :account_id ORDER BY o.order_date DESC";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
         } else {
-            $query = "SELECT * FROM orders ORDER BY order_date DESC";
+            $query = "SELECT o.*, a.username FROM orders o LEFT JOIN account a ON o.account_id = a.id ORDER BY o.order_date DESC";
             $stmt = $this->conn->prepare($query);
         }
         $stmt->execute();

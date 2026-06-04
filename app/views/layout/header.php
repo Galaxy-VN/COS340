@@ -649,8 +649,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 $route = trim($_GET['url'] ?? '', '/');
 $routeParts = $route === '' ? [] : explode('/', $route);
-$routeController = $routeParts[0] ?? '';
-$routeAction = $routeParts[1] ?? 'index';
+$routeController = isset($routeParts[0]) ? ucfirst(strtolower($routeParts[0])) : '';
+$routeAction = isset($routeParts[1]) ? strtolower($routeParts[1]) : 'index';
 $showSidebar = $routeController === 'Product' && in_array($routeAction, ['index', 'category'], true);
 $sidebarCategories = $categories ?? [];
 $cartUsername = $_SESSION['username'] ?? 'guest';
