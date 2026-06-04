@@ -18,6 +18,16 @@
 <div class="row justify-content-center">
     <div class="col-lg-5 col-xl-4">
         <div class="surface-card p-3 p-lg-4">
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-danger border-0 rounded-4">
+                    <i class="fas fa-circle-exclamation me-2"></i>
+                    <ul class="mb-0 ps-3">
+                        <?php foreach ($errors as $err): ?>
+                            <li><?php echo htmlspecialchars($err); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             <form action="/phamgiahuy/account/save" method="POST">
                 <div class="field-card mb-3">
                     <div class="fw-semibold mb-1">Thông tin tài khoản</div>
@@ -29,11 +39,15 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Họ và tên *</label>
-                    <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" required>
+                    <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($_POST['fullname'] ?? ''); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Mật khẩu *</label>
                     <input type="password" name="password" class="form-control" minlength="6" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nhập lại mật khẩu *</label>
+                    <input type="password" name="confirmpassword" class="form-control" minlength="6" required>
                 </div>
                 <input type="hidden" name="role" value="user">
                 <div class="d-flex gap-2">

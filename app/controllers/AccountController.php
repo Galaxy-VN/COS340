@@ -89,10 +89,12 @@ class AccountController
                     header('Location: /phamgiahuy/product');
                     exit;
                 } else {
-                    echo "Password incorrect.";
+                    $error = "Mật khẩu không chính xác.";
+                    include 'app/views/account/login.php';
                 }
             } else {
-                echo "Bao loi khong tim thay tai khoan.";
+                $error = "Tài khoản không tồn tại.";
+                include 'app/views/account/login.php';
             }
         }
     }

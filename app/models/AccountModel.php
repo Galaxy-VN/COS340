@@ -20,16 +20,17 @@ class AccountModel
         return $result;
     }
 
-    function save($username, $name, $password, $role="user")
+    function save($username, $fullname, $password, $role="user")
     {
-        $query = "INSERT INTO " . $this->table_name . "(username, password, role) VALUES (:username, :password, :role)";
+        $query = "INSERT INTO " . $this->table_name . "(username, password, fullname, role) VALUES (:username, :password, :fullname, :role)";
         $stmt = $this->conn->prepare($query);
 
-        $name = htmlspecialchars(strip_tags($name));
+        $fullname = htmlspecialchars(strip_tags($fullname));
         $username = htmlspecialchars(strip_tags($username));
 
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':fullname', $fullname);
         $stmt->bindParam(':role', $role);
 
         if ($stmt->execute()) {
