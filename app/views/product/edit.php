@@ -12,7 +12,7 @@
         <h1 class="h3 mb-2 fw-bold">Chỉnh sửa sản phẩm</h1>
         <p class="lead mb-0">Điều chỉnh thông tin sản phẩm và cập nhật ảnh theo từng lần chỉnh sửa.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -20,7 +20,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-8 col-xl-7">
         <div class="surface-card p-3 p-lg-4">
-            <form action="/phamgiahuy/Product/update" method="POST" enctype="multipart/form-data">
+            <form action="/phamgiahuy/product/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $product->id; ?>">
 
                 <div class="field-card mb-3">
@@ -88,7 +88,7 @@
                     <button type="submit" class="btn btn-warning">
                         <i class="fas fa-save me-1"></i>Cập nhật
                     </button>
-                    <a href="/phamgiahuy/Product" class="btn btn-outline-secondary">Hủy</a>
+                    <a href="/phamgiahuy/product" class="btn btn-outline-secondary">Hủy</a>
                 </div>
             </form>
         </div>

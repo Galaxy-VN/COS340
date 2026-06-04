@@ -11,7 +11,7 @@
         <h1 class="h3 mb-2 fw-bold">Thêm sản phẩm mới</h1>
         <p class="lead mb-0">Điền thông tin cốt lõi để sản phẩm xuất hiện ngay trong danh sách quản trị.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -30,7 +30,7 @@
                 </div>
             <?php endif; ?>
 
-            <form action="/phamgiahuy/Product/save" method="POST" enctype="multipart/form-data">
+            <form action="/phamgiahuy/product/save" method="POST" enctype="multipart/form-data">
                 <div class="field-card mb-3">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <i class="fas fa-circle-info text-primary"></i>
@@ -77,7 +77,7 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-1"></i>Lưu
                     </button>
-                    <a href="/phamgiahuy/Product" class="btn btn-outline-secondary">Hủy</a>
+                    <a href="/phamgiahuy/product" class="btn btn-outline-secondary">Hủy</a>
                 </div>
             </form>
         </div>

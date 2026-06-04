@@ -11,7 +11,7 @@
         <h1 class="h3 mb-2 fw-bold">Danh sách danh mục</h1>
         <p class="lead mb-0">Sắp xếp danh mục khoa học để việc quản trị sản phẩm nhanh và rõ ràng.</p>
     </div>
-    <a href="/phamgiahuy/Category/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/category/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-plus me-2"></i>Thêm danh mục
     </a>
 </div>
@@ -29,7 +29,7 @@
                 <div class="small text-uppercase fw-semibold muted-note mb-1">Tạo nhanh</div>
                 <div class="fw-semibold">Thêm danh mục mới</div>
             </div>
-            <a href="/phamgiahuy/Category/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Tạo mới</a>
+            <a href="/phamgiahuy/category/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Tạo mới</a>
         </div>
     </div>
 </div>
@@ -42,7 +42,7 @@
             </div>
             <h4 class="fw-semibold mb-2">Chưa có danh mục</h4>
             <p class="mb-4">Tạo danh mục đầu tiên để phân loại sản phẩm rõ ràng hơn.</p>
-            <a href="/phamgiahuy/Category/add" class="btn btn-primary">Tạo danh mục</a>
+            <a href="/phamgiahuy/category/add" class="btn btn-primary">Tạo danh mục</a>
         </div>
     <?php else: ?>
         <div class="table-responsive">
@@ -66,10 +66,10 @@
                             <td class="text-muted"><?php echo htmlspecialchars($category->description); ?></td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="/phamgiahuy/Category/edit/<?php echo $category->id; ?>" class="btn btn-outline-warning">
+                                    <a href="/phamgiahuy/category/edit/<?php echo $category->id; ?>" class="btn btn-outline-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="/phamgiahuy/Category/delete/<?php echo $category->id; ?>" class="btn btn-outline-danger" onclick="return confirm('Xóa?')">
+                                    <a href="/phamgiahuy/category/delete/<?php echo $category->id; ?>" class="btn btn-outline-danger" onclick="return confirm('Xóa?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>

@@ -135,7 +135,7 @@ class ProductController
     public function addToCart()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $productId = (int) ($_POST['product_id'] ?? 0);
@@ -145,7 +145,7 @@ class ProductController
         $product = $this->productModel->getProductById($productId);
         if (!$product) {
             $this->setFlash('Sản phẩm không tồn tại.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $cart = $this->getCart();
@@ -164,14 +164,14 @@ class ProductController
         $this->saveCart($cart);
         $this->setFlash('Đã thêm sản phẩm vào giỏ hàng.');
 
-        $redirectTo = $_POST['redirect_to'] ?? '/phamgiahuy/Product/cart';
+        $redirectTo = $_POST['redirect_to'] ?? '/phamgiahuy/product/cart';
         $this->redirectTo($redirectTo);
     }
 
     public function updateCart()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product/cart');
+            $this->redirectTo('/phamgiahuy/product/cart');
         }
 
         $quantities = $_POST['quantity'] ?? [];
@@ -193,7 +193,7 @@ class ProductController
 
         $this->saveCart($cart);
         $this->setFlash('Đã cập nhật giỏ hàng.');
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
     public function removeFromCart($id)
@@ -207,14 +207,14 @@ class ProductController
             $this->setFlash('Đã xóa sản phẩm khỏi giỏ hàng.');
         }
 
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
     public function clearCart()
     {
         $this->saveCart([]);
         $this->setFlash('Đã xóa toàn bộ giỏ hàng.');
-        $this->redirectTo('/phamgiahuy/Product/cart');
+        $this->redirectTo('/phamgiahuy/product/cart');
     }
 
 
@@ -223,7 +223,7 @@ class ProductController
         $cart = $this->getCart();
         if (empty($cart)) {
             $this->setFlash('Giỏ hàng trống.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/cart');
+            $this->redirectTo('/phamgiahuy/product/cart');
         }
 
         $items = [];
@@ -251,18 +251,18 @@ class ProductController
     public function processCheckout()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
         $cart = $this->getCart();
         if (empty($cart)) {
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
         $name = $_POST['name'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $address = $_POST['address'] ?? '';
         if (empty($name) || empty($phone) || empty($address)) {
             $this->setFlash('Vui lòng điền đầy đủ thông tin.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
         $items = [];
         foreach ($cart as $productId => $item) {
@@ -282,10 +282,10 @@ class ProductController
             $this->saveCart([]);
             $_SESSION['last_order_id'] = $orderId;
             $this->setFlash('Đặt hàng thành công! Mã đơn hàng: #' . $orderId, 'success');
-            $this->redirectTo('/phamgiahuy/Product/confirm/' . $orderId);
+            $this->redirectTo('/phamgiahuy/product/confirm/' . $orderId);
         } else {
             $this->setFlash('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/checkout');
+            $this->redirectTo('/phamgiahuy/product/checkout');
         }
     }
 
@@ -294,7 +294,7 @@ class ProductController
         $order = $this->orderModel->getOrderById($id);
         if (!$order) {
             $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $isLastPlaced = isset($_SESSION['last_order_id']) && $_SESSION['last_order_id'] == $id;
@@ -303,7 +303,7 @@ class ProductController
 
         if (!$isAdmin && !$isOwner && !$isLastPlaced) {
             $this->setFlash('Bạn không có quyền xem trang này.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product');
+            $this->redirectTo('/phamgiahuy/product');
         }
 
         $orderDetails = $this->orderModel->getOrderDetails($id);
@@ -347,7 +347,7 @@ class ProductController
         $order = $this->orderModel->getOrderById($id);
         if (!$order) {
             $this->setFlash('Không tìm thấy đơn hàng.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/orders');
+            $this->redirectTo('/phamgiahuy/product/orders');
         }
 
         $isOwner = isset($_SESSION['user_id']) && $order['account_id'] == $_SESSION['user_id'];
@@ -355,7 +355,7 @@ class ProductController
 
         if (!$isAdmin && !$isOwner) {
             $this->setFlash('Bạn không có quyền xem chi tiết đơn hàng này.', 'danger');
-            $this->redirectTo('/phamgiahuy/Product/orders');
+            $this->redirectTo('/phamgiahuy/product/orders');
         }
 
         $orderDetails = $this->orderModel->getOrderDetails($id);
@@ -417,7 +417,7 @@ class ProductController
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/product/add.php';
             } else {
-                header('Location: /phamgiahuy/Product');
+                header('Location: /phamgiahuy/product');
                 exit;
             }
         }
@@ -471,7 +471,7 @@ class ProductController
                 $categories = $this->categoryModel->getCategories();
                 include 'app/views/product/edit.php';
             } elseif ($edit) {
-                header('Location: /phamgiahuy/Product');
+                header('Location: /phamgiahuy/product');
                 exit;
             } else {
                 echo 'Error updating product';
@@ -486,7 +486,7 @@ class ProductController
             return;
         }
         if ($this->productModel->deleteProduct($id)) {
-            header('Location: /phamgiahuy/Product');
+            header('Location: /phamgiahuy/product');
             exit;
         } else {
             echo 'Error deleting product';
@@ -534,6 +534,6 @@ class ProductController
                 }
             }
         }
-        $this->redirectTo('/phamgiahuy/Product/manageOrders');
+        $this->redirectTo('/phamgiahuy/product/manageOrders');
     }
 }

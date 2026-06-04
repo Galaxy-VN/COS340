@@ -11,7 +11,7 @@
         <h1 class="h3 mb-2 fw-bold">Chỉnh sửa danh mục</h1>
         <p class="lead mb-0">Cập nhật nhanh tên và mô tả để danh mục luôn rõ ràng, nhất quán.</p>
     </div>
-    <a href="/phamgiahuy/Category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/category" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
 </div>
@@ -19,7 +19,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="surface-card p-3 p-lg-4">
-            <form action="/phamgiahuy/Category/update" method="POST">
+            <form action="/phamgiahuy/category/update" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($category->id); ?>">
 
                 <div class="field-card mb-3">
@@ -46,7 +46,7 @@
                     <button type="submit" class="btn btn-warning">
                         <i class="fas fa-save me-1"></i>Cập nhật
                     </button>
-                    <a href="/phamgiahuy/Category" class="btn btn-outline-secondary">Hủy</a>
+                    <a href="/phamgiahuy/category" class="btn btn-outline-secondary">Hủy</a>
                 </div>
             </form>
         </div>

@@ -18,7 +18,7 @@
             <i class="fas fa-cart-shopping me-2"></i>Giỏ hàng <?php if ($cartCount > 0): ?><span class="badge bg-dark ms-2"><?php echo $cartCount; ?></span><?php endif; ?>
         </button>
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-            <a href="/phamgiahuy/Product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+            <a href="/phamgiahuy/product/add" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
                 <i class="fas fa-plus me-2"></i>Thêm sản phẩm
             </a>
         <?php endif; ?>
@@ -47,9 +47,9 @@
             <div class="small text-uppercase fw-semibold muted-note mb-2">Thao tác nhanh</div>
             <div class="d-flex gap-2 flex-wrap">
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a href="/phamgiahuy/Product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+                    <a href="/phamgiahuy/product/add" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Thêm mới</a>
                 <?php endif; ?>
-                <a href="/phamgiahuy/Product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
+                <a href="/phamgiahuy/product" class="btn btn-outline-secondary btn-sm"><i class="fas fa-rotate-right me-1"></i>Làm mới</a>
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
             <h4 class="fw-semibold mb-2">Chưa có sản phẩm nào</h4>
             <p class="mb-4">Hãy tạo sản phẩm đầu tiên để bắt đầu quản lý dữ liệu tập trung.</p>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                <a href="/phamgiahuy/Product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+                <a href="/phamgiahuy/product/add" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
             <?php endif; ?>
         </div>
     <?php else: ?>
@@ -90,7 +90,7 @@
                             </div>
                             <div class="card-body d-flex flex-column">
                                 <div class="mb-1 product-card-title fw-semibold">
-                                    <a href="/phamgiahuy/Product/show/<?php echo $product->id; ?>" class="text-decoration-none text-reset">
+                                    <a href="/phamgiahuy/product/show/<?php echo $product->id; ?>" class="text-decoration-none text-reset">
                                         <?php echo htmlspecialchars($product->name); ?>
                                     </a>
                                 </div>
@@ -98,15 +98,15 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="fw-bold text-primary"><?php echo number_format($product->price, 0, ',', '.'); ?>đ</div>
                                     <div class="d-flex align-items-center gap-2">
-                                        <form action="/phamgiahuy/Product/addToCart" method="POST" class="m-0">
+                                        <form action="/phamgiahuy/product/addToCart" method="POST" class="m-0">
                                             <input type="hidden" name="product_id" value="<?php echo $product->id; ?>">
                                             <input type="hidden" name="quantity" value="1">
-                                            <input type="hidden" name="redirect_to" value="/phamgiahuy/Product">
+                                            <input type="hidden" name="redirect_to" value="/phamgiahuy/product">
                                             <button type="submit" class="btn btn-sm btn-primary" title="Thêm vào giỏ">
                                                 <i class="fas fa-cart-plus"></i>
                                             </button>
                                         </form>
-                                        <a href="/phamgiahuy/Product/show/<?php echo $product->id; ?>" class="btn btn-sm btn-glass" title="Xem">
+                                        <a href="/phamgiahuy/product/show/<?php echo $product->id; ?>" class="btn btn-sm btn-glass" title="Xem">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </div>

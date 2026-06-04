@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Quản lý đơn hàng</h1>
         <p class="lead mb-0">Xem danh sách, kiểm tra thông tin và cập nhật trạng thái đơn hàng của hệ thống.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại cửa hàng
     </a>
 </div>
@@ -71,7 +71,7 @@
                                 <span class="fw-bold text-primary fs-6"><?php echo number_format($order['total'], 0, ',', '.'); ?>đ</span>
                             </td>
                             <td>
-                                <form action="/phamgiahuy/Product/updateOrderStatus" method="POST" class="m-0">
+                                <form action="/phamgiahuy/product/updateOrderStatus" method="POST" class="m-0">
                                     <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
                                     <select name="status" class="form-select form-select-sm fw-semibold" onchange="this.form.submit()" style="max-width: 170px; background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15);">
                                         <option value="pending" class="text-dark" <?php echo $order['status'] === 'pending' ? 'selected' : ''; ?>>⏳ Chờ xử lý</option>
@@ -83,7 +83,7 @@
                                 </form>
                             </td>
                             <td>
-                                <a href="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
+                                <a href="/phamgiahuy/product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
                                     <i class="fas fa-eye me-1"></i>Chi tiết
                                 </a>
                             </td>

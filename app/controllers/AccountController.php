@@ -67,7 +67,7 @@ class AccountController
     public function logout()
     {
         SessionHelper::logout();
-        header('Location: /phamgiahuy/Product');
+        header('Location: /phamgiahuy/product');
     }
 
     public function checkLogin()
@@ -81,7 +81,7 @@ class AccountController
                 $pwd_hashed = $account->password;
                 if (password_verify($password, $pwd_hashed)) {
                     SessionHelper::login($account->id, $account->username, $account->role);
-                    header('Location: /phamgiahuy/Product');
+                    header('Location: /phamgiahuy/product');
                     exit;
                 } else {
                     $error = "Mật khẩu không chính xác.";

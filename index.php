@@ -28,7 +28,7 @@ if (in_array($controllerName, $adminControllers)) {
 }
 
 if ($requiresAdmin && !SessionHelper::isAdmin()) {
-    header('Location: /phamgiahuy/Product');
+    header('Location: /phamgiahuy/product');
     exit;
 }
 

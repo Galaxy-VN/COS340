@@ -668,13 +668,13 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/phamgiahuy/Product">
+        <a class="navbar-brand" href="/phamgiahuy/product">
             <span class="brand-mark"><i class="fas fa-cubes"></i></span>
             <span>Quản lý sản phẩm</span>
         </a>
 
         <div class="header-search d-none d-md-block">
-            <form action="/phamgiahuy/Product" method="GET" class="w-100">
+            <form action="/phamgiahuy/product" method="GET" class="w-100">
                 <div class="input-group">
                     <input name="q" class="form-control" placeholder="Tìm sản phẩm, mã SP..." value="<?php echo htmlspecialchars($_GET['q'] ?? '') ?>">
                     <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
@@ -699,14 +699,14 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Desktop: icon buttons (hidden on mobile) -->
             <div class="d-none d-md-flex align-items-center gap-2 ms-auto">
-                <a href="/phamgiahuy/Product/orders" class="btn btn-glass" title="Đơn hàng">
+                <a href="/phamgiahuy/product/orders" class="btn btn-glass" title="Đơn hàng">
                     <i class="fas fa-receipt"></i>
                 </a>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a href="/phamgiahuy/Product/manageOrders" class="btn btn-glass" title="Quản lý đơn hàng">
+                    <a href="/phamgiahuy/product/manageOrders" class="btn btn-glass" title="Quản lý đơn hàng">
                         <i class="fas fa-tasks"></i>
                     </a>
-                    <a href="/phamgiahuy/Category" class="btn btn-glass" title="Danh mục">
+                    <a href="/phamgiahuy/category" class="btn btn-glass" title="Danh mục">
                         <i class="fas fa-folder"></i>
                     </a>
                 <?php endif; ?>
@@ -728,20 +728,20 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
             <!-- Mobile: text links (hidden on desktop) -->
             <ul class="navbar-nav d-md-none ms-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link <?php echo $isHome ? 'active' : ''; ?>" href="/phamgiahuy/Product"><i class="fas fa-box me-1"></i> Sản phẩm</a>
+                    <a class="nav-link <?php echo $isHome ? 'active' : ''; ?>" href="/phamgiahuy/product"><i class="fas fa-box me-1"></i> Sản phẩm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?php echo $isCart ? 'active' : ''; ?>" href="/phamgiahuy/Product/cart"><i class="fas fa-cart-shopping me-1"></i> Giỏ hàng</a>
+                    <a class="nav-link <?php echo $isCart ? 'active' : ''; ?>" href="/phamgiahuy/product/cart"><i class="fas fa-cart-shopping me-1"></i> Giỏ hàng</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?php echo $isOrders ? 'active' : ''; ?>" href="/phamgiahuy/Product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
+                    <a class="nav-link <?php echo $isOrders ? 'active' : ''; ?>" href="/phamgiahuy/product/orders"><i class="fas fa-receipt me-1"></i> Đơn hàng</a>
                 </li>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/phamgiahuy/Product/manageOrders"><i class="fas fa-tasks me-1"></i> Quản lý đơn hàng</a>
+                        <a class="nav-link" href="/phamgiahuy/product/manageOrders"><i class="fas fa-tasks me-1"></i> Quản lý đơn hàng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/Category"><i class="fas fa-folder me-1"></i> Danh mục</a>
+                        <a class="nav-link <?php echo $isCategory ? 'active' : ''; ?>" href="/phamgiahuy/category"><i class="fas fa-folder me-1"></i> Danh mục</a>
                     </li>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['username'])): ?>
@@ -797,7 +797,7 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                                     <input type="number" name="quantity" value="<?php echo (int)($ci['quantity'] ?? 0); ?>" min="1" class="form-control form-control-sm me-2" style="width:78px;">
                                     <button class="btn btn-sm btn-outline-secondary update-cart-btn" type="button" title="Cập nhật"><i class="fas fa-check"></i></button>
                                 </form>
-                                <form action="/phamgiahuy/Product/removeFromCart" method="POST">
+                                <form action="/phamgiahuy/product/removeFromCart" method="POST">
                                     <input type="hidden" name="product_id" value="<?php echo (int)($ci['product_id'] ?? 0); ?>">
                                     <button class="btn btn-sm btn-outline-danger" type="submit" title="Xóa"><i class="fas fa-trash"></i></button>
                                 </form>
@@ -811,8 +811,8 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
                         <div class="fw-bold"><?php echo number_format($cartTotal, 0, ',', '.'); ?>đ</div>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="/phamgiahuy/Product/checkout" class="btn btn-primary flex-grow-1">Thanh toán</a>
-                        <a href="/phamgiahuy/Product/cart" class="btn btn-glass">Xem giỏ</a>
+                        <a href="/phamgiahuy/product/checkout" class="btn btn-primary flex-grow-1">Thanh toán</a>
+                        <a href="/phamgiahuy/product/cart" class="btn btn-glass">Xem giỏ</a>
                     </div>
                 </div>
             <?php endif; ?>
@@ -828,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function(){
         var product_id = $form.find('input[name="product_id"]').val();
         var quantity = $form.find('input[name="quantity"]').val();
         if (!product_id) return;
-        $.post('/phamgiahuy/Product/updateCart', { product_id: product_id, quantity: quantity })
+        $.post('/phamgiahuy/product/updateCart', { product_id: product_id, quantity: quantity })
             .done(function(res){
                 // reload to refresh cart and totals
                 location.reload();
@@ -856,11 +856,11 @@ document.addEventListener('DOMContentLoaded', function(){
                     </h6>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="/phamgiahuy/Product" class="list-group-item list-group-item-action <?php echo !isset($current_category) ? 'active' : ''; ?>">
+                    <a href="/phamgiahuy/product" class="list-group-item list-group-item-action <?php echo !isset($current_category) ? 'active' : ''; ?>">
                         <i class="fas fa-boxes me-2"></i>Tất cả
                     </a>
                     <?php foreach ($sidebarCategories as $category): ?>
-                        <a href="/phamgiahuy/Product/category/<?php echo $category->id; ?>" class="list-group-item list-group-item-action <?php echo (isset($current_category) && $current_category->id == $category->id) ? 'active' : ''; ?>">
+                        <a href="/phamgiahuy/product/category/<?php echo $category->id; ?>" class="list-group-item list-group-item-action <?php echo (isset($current_category) && $current_category->id == $category->id) ? 'active' : ''; ?>">
                             <i class="fas fa-folder me-2"></i><?php echo htmlspecialchars($category->name); ?>
                         </a>
                     <?php endforeach; ?>

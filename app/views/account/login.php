@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Đăng nhập</h1>
         <p class="lead mb-0">Đăng nhập để quản lý tài khoản và theo dõi đơn hàng.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại
     </a>
 </div>

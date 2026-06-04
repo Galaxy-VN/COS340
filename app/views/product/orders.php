@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 fw-bold">Lịch sử đơn hàng</h1>
         <p class="lead mb-0">Theo dõi trạng thái và chi tiết các đơn hàng bạn đã mua trước đây.</p>
     </div>
-    <a href="/phamgiahuy/Product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
+    <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index: 1;">
         <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua hàng
     </a>
 </div>
@@ -22,7 +22,7 @@
         </div>
         <h3 class="fw-bold mb-2">Bạn chưa có đơn hàng nào</h3>
         <p class="text-muted mb-4 text-center">Hãy thêm các sản phẩm yêu thích vào giỏ hàng và thanh toán nhé.</p>
-        <a href="/phamgiahuy/Product" class="btn btn-primary btn-lg rounded-pill px-5">
+        <a href="/phamgiahuy/product" class="btn btn-primary btn-lg rounded-pill px-5">
             <i class="fas fa-shop me-2"></i>Đi đến cửa hàng
         </a>
     </div>
@@ -78,7 +78,7 @@
                                 ?>
                             </td>
                             <td>
-                                <a href="/phamgiahuy/Product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
+                                <a href="/phamgiahuy/product/orderDetail/<?php echo urlencode($order['id']); ?>" class="btn btn-sm btn-outline-primary rounded-pill">
                                     <i class="fas fa-eye me-1"></i>Xem
                                 </a>
                             </td>
