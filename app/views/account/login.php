@@ -33,7 +33,10 @@
                     <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Mật khẩu *</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label fw-semibold mb-0">Mật khẩu *</label>
+                        <a href="/phamgiahuy/account/forgotPassword?action=reset" class="text-soft fs-7 text-decoration-none"><i class="fas fa-circle-question me-1"></i>Quên mật khẩu?</a>
+                    </div>
                     <input type="password" name="password" class="form-control" required>
                 </div>
                 <div class="d-flex gap-2">

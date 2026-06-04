@@ -74,4 +74,21 @@ class AccountModel
 
         return $stmt->execute();
     }
+
+    public function updateSecurityQuestions($id, $a1, $a2, $a3)
+    {
+        $query = "UPDATE " . $this->table_name . " SET security_a1 = :a1, security_a2 = :a2, security_a3 = :a3 WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        $a1 = strtolower(trim(htmlspecialchars(strip_tags($a1))));
+        $a2 = strtolower(trim(htmlspecialchars(strip_tags($a2))));
+        $a3 = strtolower(trim(htmlspecialchars(strip_tags($a3))));
+
+        $stmt->bindParam(':a1', $a1);
+        $stmt->bindParam(':a2', $a2);
+        $stmt->bindParam(':a3', $a3);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }

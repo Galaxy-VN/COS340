@@ -244,9 +244,189 @@ class AccountController
                     $_SESSION['flash_type'] = "danger";
                 }
             }
+            elseif ($actionType === 'update_security') {
+                $a1 = trim($_POST['security_a1'] ?? '');
+                $a2 = trim($_POST['security_a2'] ?? '');
+                $a3 = trim($_POST['security_a3'] ?? '');
+
+                if (empty($a1) || empty($a2) || empty($a3)) {
+                    $_SESSION['flash_message'] = "Vui lòng trả lời đầy đủ cả 3 câu hỏi bảo mật!";
+                    $_SESSION['flash_type'] = "danger";
+                    header('Location: /phamgiahuy/account/profile');
+                    exit;
+                }
+
+                if ($this->accountModel->updateSecurityQuestions($userId, $a1, $a2, $a3)) {
+                    $_SESSION['flash_message'] = "Cập nhật câu hỏi bảo mật thành công!";
+                    $_SESSION['flash_type'] = "success";
+                } else {
+                    $_SESSION['flash_message'] = "Có lỗi xảy ra khi cập nhật câu hỏi bảo mật!";
+                    $_SESSION['flash_type'] = "danger";
+                }
+            }
         }
 
         header('Location: /phamgiahuy/account/profile');
+        exit;
+    }
+
+    public function forgotPassword()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_GET['action']) && $_GET['action'] === 'reset') {
+            unset($_SESSION['recovery_step'], $_SESSION['recovery_username'], $_SESSION['recovery_error']);
+        }
+
+        // Initialize recovery session if not set
+        if (!isset($_SESSION['recovery_step'])) {
+            $_SESSION['recovery_step'] = 1;
+        }
+
+        $step = $_SESSION['recovery_step'];
+        $username = $_SESSION['recovery_username'] ?? '';
+        $error = $_SESSION['recovery_error'] ?? null;
+        
+        unset($_SESSION['recovery_error']);
+
+        include 'app/views/account/forgotPassword.php';
+    }
+
+    public function verifyUsername()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username'] ?? '');
+
+            if (empty($username)) {
+                $_SESSION['recovery_error'] = "Vui lòng nhập tên tài khoản!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $account = $this->accountModel->getAccountByUsername($username);
+            if (!$account) {
+                $_SESSION['recovery_error'] = "Tài khoản không tồn tại!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            if (empty($account->security_a1) || empty($account->security_a2) || empty($account->security_a3)) {
+                $_SESSION['recovery_error'] = "Tài khoản này chưa cài đặt câu hỏi bảo mật. Vui lòng liên hệ Admin để đặt lại mật khẩu!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $_SESSION['recovery_step'] = 2;
+            $_SESSION['recovery_username'] = $username;
+        }
+
+        header('Location: /phamgiahuy/account/forgotPassword');
+        exit;
+    }
+
+    public function verifyQuestions()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_SESSION['recovery_username'] ?? '';
+            if (empty($username)) {
+                $_SESSION['recovery_step'] = 1;
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $a1 = strtolower(trim($_POST['security_a1'] ?? ''));
+            $a2 = strtolower(trim($_POST['security_a2'] ?? ''));
+            $a3 = strtolower(trim($_POST['security_a3'] ?? ''));
+
+            if (empty($a1) || empty($a2) || empty($a3)) {
+                $_SESSION['recovery_error'] = "Vui lòng nhập câu trả lời cho cả 3 câu hỏi!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $account = $this->accountModel->getAccountByUsername($username);
+            if (!$account) {
+                $_SESSION['recovery_step'] = 1;
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $db_a1 = strtolower(trim($account->security_a1));
+            $db_a2 = strtolower(trim($account->security_a2));
+            $db_a3 = strtolower(trim($account->security_a3));
+
+            if ($a1 === $db_a1 && $a2 === $db_a2 && $a3 === $db_a3) {
+                $_SESSION['recovery_step'] = 3;
+            } else {
+                $_SESSION['recovery_error'] = "Câu trả lời bảo mật không đúng! Vui lòng thử lại.";
+            }
+        }
+
+        header('Location: /phamgiahuy/account/forgotPassword');
+        exit;
+    }
+
+    public function resetPassword()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_SESSION['recovery_username'] ?? '';
+            $step = $_SESSION['recovery_step'] ?? 1;
+
+            if (empty($username) || $step != 3) {
+                $_SESSION['recovery_step'] = 1;
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $newPassword = $_POST['new_password'] ?? '';
+            $confirmNewPassword = $_POST['confirm_new_password'] ?? '';
+
+            if (empty($newPassword) || empty($confirmNewPassword)) {
+                $_SESSION['recovery_error'] = "Vui lòng nhập đầy đủ mật khẩu mới!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            if ($newPassword !== $confirmNewPassword) {
+                $_SESSION['recovery_error'] = "Mật khẩu mới nhập lại không khớp!";
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $account = $this->accountModel->getAccountByUsername($username);
+            if (!$account) {
+                $_SESSION['recovery_step'] = 1;
+                header('Location: /phamgiahuy/account/forgotPassword');
+                exit;
+            }
+
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+            if ($this->accountModel->updatePassword($account->id, $hashedPassword)) {
+                unset($_SESSION['recovery_step'], $_SESSION['recovery_username']);
+                $_SESSION['flash_message'] = "Đặt lại mật khẩu thành công! Hãy đăng nhập bằng mật khẩu mới.";
+                $_SESSION['flash_type'] = "success";
+                header('Location: /phamgiahuy/account/login');
+                exit;
+            } else {
+                $_SESSION['recovery_error'] = "Có lỗi xảy ra khi đặt lại mật khẩu!";
+            }
+        }
+
+        header('Location: /phamgiahuy/account/forgotPassword');
         exit;
     }
 }

@@ -123,6 +123,39 @@
                 </div>
             </form>
         </div>
+
+        <!-- Form cài đặt câu hỏi bảo mật -->
+        <div class="surface-card p-3 p-lg-4 mt-4">
+            <div class="field-card mb-3">
+                <h5 class="fw-bold text-main mb-1"><i class="fas fa-shield-halved me-2 text-info"></i>Cài đặt câu hỏi bảo mật</h5>
+                <div class="muted-note">Các câu hỏi này sẽ được sử dụng để khôi phục mật khẩu nếu bạn lỡ quên. Hãy điền các câu trả lời dễ nhớ nhất đối với bạn (không phân biệt chữ hoa, chữ thường).</div>
+            </div>
+
+            <form action="/phamgiahuy/account/updateProfile" method="POST">
+                <input type="hidden" name="action_type" value="update_security">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Câu hỏi 1: Tên con vật cưng đầu tiên của bạn là gì? *</label>
+                    <input type="text" name="security_a1" class="form-control" required placeholder="<?php echo !empty($account->security_a1) ? 'Đã thiết lập câu trả lời (Có thể nhập để ghi đè)' : 'Nhập câu trả lời của bạn'; ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Câu hỏi 2: Tên trường tiểu học của bạn là gì? *</label>
+                    <input type="text" name="security_a2" class="form-control" required placeholder="<?php echo !empty($account->security_a2) ? 'Đã thiết lập câu trả lời (Có thể nhập để ghi đè)' : 'Nhập câu trả lời của bạn'; ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Câu hỏi 3: Sở thích lớn nhất của bạn là gì? *</label>
+                    <input type="text" name="security_a3" class="form-control" required placeholder="<?php echo !empty($account->security_a3) ? 'Đã thiết lập câu trả lời (Có thể nhập để ghi đè)' : 'Nhập câu trả lời của bạn'; ?>">
+                </div>
+
+                <div class="d-grid d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-info px-4 text-dark fw-bold">
+                        <i class="fas fa-shield me-2"></i>Lưu câu hỏi bảo mật
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
