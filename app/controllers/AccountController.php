@@ -66,10 +66,7 @@ class AccountController
 
     public function logout()
     {
-        unset($_SESSION['username']);
-        unset($_SESSION['role']);
-        unset($_SESSION['user_id']);
-        
+        SessionHelper::logout();
         header('Location: /phamgiahuy/Product');
     }
 
@@ -83,12 +80,7 @@ class AccountController
             if ($account){
                 $pwd_hashed = $account->password;
                 if (password_verify($password, $pwd_hashed)) {
-                    session_start();
-
-                    $_SESSION['username'] = $account->username;
-                    $_SESSION['role'] = $account->role;
-                    $_SESSION['user_id'] = $account->id;
-
+                    SessionHelper::login($account->id, $account->username, $account->role);
                     header('Location: /phamgiahuy/Product');
                     exit;
                 } else {

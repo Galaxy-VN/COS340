@@ -9,13 +9,6 @@ class CategoryController
 
     public function __construct()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            header('Location: /phamgiahuy/Product');
-            exit;
-        }
         $this->db = (new Database())->getConnection();
         $this->categoryModel = new CategoryModel($this->db);
     }

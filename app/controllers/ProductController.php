@@ -61,12 +61,7 @@ class ProductController
         exit;
     }
 
-    private function checkAdmin(): void
-    {
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            $this->redirectTo('/phamgiahuy/Product');
-        }
-    }
+
 
     public function index()
     {
@@ -390,14 +385,12 @@ class ProductController
 
     public function add()
     {
-        $this->checkAdmin();
         $categories = $this->categoryModel->getCategories();
         include_once 'app/views/product/add.php';
     }
 
     public function save()
     {
-        $this->checkAdmin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $_POST['name'];
             $description = $_POST['description'];
@@ -432,7 +425,6 @@ class ProductController
 
     public function edit($id)
     {
-        $this->checkAdmin();
         if (!is_numeric($id) || $id <= 0) {
             echo 'Invalid product ID';
             return;
@@ -449,7 +441,6 @@ class ProductController
 
     public function update()
     {
-        $this->checkAdmin();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id = $_POST['id'];
             $name = $_POST['name'];
@@ -490,7 +481,6 @@ class ProductController
 
     public function delete($id)
     {
-        $this->checkAdmin();
         if (!is_numeric($id) || $id <= 0) {
             echo 'Invalid product ID';
             return;
@@ -505,8 +495,6 @@ class ProductController
 
     public function manageOrders()
     {
-        $this->checkAdmin();
-        
         $rawOrders = $this->orderModel->getOrders();
         $orders = [];
         foreach ($rawOrders as $o) {
@@ -534,7 +522,6 @@ class ProductController
 
     public function updateOrderStatus()
     {
-        $this->checkAdmin();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $orderId = (int)($_POST['order_id'] ?? 0);
             $status = $_POST['status'] ?? 'pending';
