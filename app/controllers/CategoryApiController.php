@@ -1,16 +1,19 @@
 <?php
 require_once "app/config/database.php";
 require_once "app/models/CategoryModel.php";
+require_once "app/utils/JWTHandler.php";
 
 class CategoryApiController
 {
     private $categoryModel;
     private $db;
+    private $jwt;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->categoryModel = new CategoryModel($this->db);
+        $this->jwt = new JWTHandler();
         header("Content-Type: application/json");
     }
 
@@ -33,6 +36,8 @@ class CategoryApiController
 
     public function create()
     {
+        $this->jwt->authenticate();
+
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             http_response_code(405);
             echo json_encode(["error" => "Method not allowed"]);
@@ -63,6 +68,8 @@ class CategoryApiController
 
     public function update($id)
     {
+        $this->jwt->authenticate();
+
         if ($_SERVER["REQUEST_METHOD"] !== "PUT") {
             http_response_code(405);
             echo json_encode(["error" => "Method not allowed"]);
@@ -101,6 +108,8 @@ class CategoryApiController
 
     public function delete($id)
     {
+        $this->jwt->authenticate();
+
         if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
             http_response_code(405);
             echo json_encode(["error" => "Method not allowed"]);

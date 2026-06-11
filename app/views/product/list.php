@@ -182,7 +182,9 @@ async function fetchProducts() {
                 if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
 
                 try {
-                    const resp = await fetch(`${API_BASE}/product/${id}`, { method: 'DELETE' });
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (JWT_TOKEN) headers['Authorization'] = 'Bearer ' + JWT_TOKEN;
+                    const resp = await fetch(`${API_BASE}/product/${id}`, { method: 'DELETE', headers });
                     if (resp.ok) {
                         fetchProducts();
                     } else {

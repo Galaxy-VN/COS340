@@ -842,6 +842,7 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
     </div>
 </div>
 <script>
+const JWT_TOKEN = <?php echo json_encode($_SESSION['jwt_token'] ?? null); ?>;
 // AJAX update cart from offcanvas
 document.addEventListener('DOMContentLoaded', function(){
     $(document).on('click', '.update-cart-btn', function(e){

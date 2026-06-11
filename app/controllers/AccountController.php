@@ -1,16 +1,19 @@
 <?php
 require_once 'app/config/database.php';
 require_once 'app/models/AccountModel.php';
+require_once 'app/utils/JWTHandler.php';
 
 class AccountController
 {
     private $accountModel;
     private $db;
+    private $jwt;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->accountModel = new AccountModel($this->db);
+        $this->jwt = new JWTHandler();
     }
 
     function register()
@@ -74,6 +77,22 @@ class AccountController
         header('Location: /phamgiahuy/product');
     }
 
+    public function getToken()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header("Content-Type: application/json");
+        if (!isset($_SESSION['jwt_token'])) {
+            http_response_code(401);
+            echo json_encode(["error" => "Not logged in"]);
+            return;
+        }
+
+        echo json_encode(["token" => $_SESSION['jwt_token']]);
+    }
+
     public function checkLogin()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -92,6 +111,10 @@ class AccountController
                     $_SESSION['role'] = $account->role;
                     $_SESSION['fullname'] = $account->fullname;
                     $_SESSION['avatar'] = $account->avatar ?? '';
+
+                    $token = $this->jwt->generateToken($account->id, $account->username, $account->role);
+                    $_SESSION['jwt_token'] = $token;
+
                     header('Location: /phamgiahuy/product');
                     exit;
                 } else {
