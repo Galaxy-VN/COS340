@@ -12,7 +12,7 @@ class JWTHandler
 
     public function __construct($expiration = 3600)
     {
-        $this->secretKey = "galaxyvn-2026";
+        $this->secretKey = "your-secret-key-change-in-production";
         $this->expiration = $expiration;
     }
 
