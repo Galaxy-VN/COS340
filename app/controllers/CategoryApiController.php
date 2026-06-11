@@ -36,7 +36,7 @@ class CategoryApiController
 
     public function create()
     {
-        $this->jwt->authenticate();
+        $this->jwt->authorize(["admin"]);
 
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             http_response_code(405);
@@ -68,7 +68,7 @@ class CategoryApiController
 
     public function update($id)
     {
-        $this->jwt->authenticate();
+        $this->jwt->authorize(["admin"]);
 
         if ($_SERVER["REQUEST_METHOD"] !== "PUT") {
             http_response_code(405);
@@ -108,7 +108,7 @@ class CategoryApiController
 
     public function delete($id)
     {
-        $this->jwt->authenticate();
+        $this->jwt->authorize(["admin"]);
 
         if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
             http_response_code(405);

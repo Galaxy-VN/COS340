@@ -182,13 +182,13 @@ async function fetchProducts() {
                 if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
 
                 try {
-                    const headers = { 'Content-Type': 'application/json' };
-                    if (JWT_TOKEN) headers['Authorization'] = 'Bearer ' + JWT_TOKEN;
-                    const resp = await fetch(`${API_BASE}/product/${id}`, { method: 'DELETE', headers });
+                    const resp = await authFetch(`${API_BASE}/product/${id}`, { method: 'DELETE' });
+                    if (!resp) return;
                     if (resp.ok) {
+                        showToast('success', 'Thành công', 'Sản phẩm đã được xóa.');
                         fetchProducts();
                     } else {
-                        alert('Xóa sản phẩm thất bại.');
+                        showToast('error', 'Lỗi', 'Xóa sản phẩm thất bại.');
                     }
                 } catch (e) {
                     alert('Lỗi kết nối.');

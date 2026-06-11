@@ -640,6 +640,65 @@
 
         /* Logout icon: replace inline style */
         .logout-icon { font-size: 0.8em; opacity: 0.7; }
+
+        /* Toast notification */
+        .toast-container-custom {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast-custom {
+            min-width: 300px;
+            max-width: 420px;
+            padding: 0.85rem 1.1rem;
+            border-radius: 14px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: toastIn 0.35s cubic-bezier(0.4,0,0.2,1);
+            color: var(--text-main);
+            font-size: 0.92rem;
+        }
+        .toast-custom.toast-exit {
+            animation: toastOut 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        .toast-custom.toast-error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+        .toast-custom.toast-success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .toast-custom.toast-warning {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        .toast-custom .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .toast-custom .toast-body { flex: 1; }
+        .toast-custom .toast-body .toast-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
+        .toast-custom .toast-body .toast-msg { opacity: 0.85; font-size: 0.84rem; }
+        .toast-custom .toast-close {
+            background: none; border: none; color: inherit; opacity: 0.6;
+            font-size: 1.1rem; cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0;
+        }
+        .toast-custom .toast-close:hover { opacity: 1; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0) scale(1); }
+            to { opacity: 0; transform: translateX(40px) scale(0.95); }
+        }
     </style>
 </head>
 <body>
@@ -843,6 +902,44 @@ $isHome = $routeController === '' || ($isProduct && $routeAction === 'index');
 </div>
 <script>
 const JWT_TOKEN = <?php echo json_encode($_SESSION['jwt_token'] ?? null); ?>;
+
+function showToast(type, title, message, duration) {
+    duration = duration || 4000;
+    var container = document.getElementById('toastContainer');
+    var icons = { error: 'fa-circle-exclamation', success: 'fa-circle-check', warning: 'fa-triangle-exclamation' };
+    var toast = document.createElement('div');
+    toast.className = 'toast-custom toast-' + type;
+    toast.innerHTML = '<span class="toast-icon"><i class="fas ' + (icons[type] || icons.error) + '"></i></span>'
+        + '<div class="toast-body"><div class="toast-title">' + title + '</div>'
+        + '<div class="toast-msg">' + message + '</div></div>'
+        + '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+    container.appendChild(toast);
+    setTimeout(function() {
+        toast.classList.add('toast-exit');
+        setTimeout(function() { toast.remove(); }, 300);
+    }, duration);
+}
+
+async function authFetch(url, options) {
+    options = options || {};
+    options.headers = options.headers || {};
+    if (JWT_TOKEN) {
+        options.headers['Authorization'] = 'Bearer ' + JWT_TOKEN;
+    }
+    if (!options.headers['Content-Type'] && options.body) {
+        options.headers['Content-Type'] = 'application/json';
+    }
+    var resp = await fetch(url, options);
+    if (resp.status === 401) {
+        showToast('error', 'Chưa đăng nhập', 'Vui lòng đăng nhập để thực hiện thao tác này.');
+        return null;
+    }
+    if (resp.status === 403) {
+        showToast('warning', 'Không có quyền', 'Bạn không có quyền thực hiện thao tác này.');
+        return null;
+    }
+    return resp;
+}
 // AJAX update cart from offcanvas
 document.addEventListener('DOMContentLoaded', function(){
     $(document).on('click', '.update-cart-btn', function(e){
@@ -862,6 +959,7 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 <div class="app-shell">
+<div class="toast-container-custom" id="toastContainer"></div>
 <div class="container-fluid main-container">
     <?php if (!empty($flashMessage)): ?>
         <div class="alert alert-<?php echo htmlspecialchars($flashType); ?> border-0 shadow-sm rounded-4 mb-3">
