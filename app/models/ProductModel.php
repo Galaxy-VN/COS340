@@ -12,7 +12,7 @@ class ProductModel
 
     public function getProducts()
     {
-        $query = "SELECT p.id, p.name, p.description, p.price, p.image, c.name as category_name 
+        $query = "SELECT p.id, p.name, p.description, p.price, c.name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN category c ON p.category_id = c.id";
         $stmt = $this->conn->prepare($query);
@@ -23,7 +23,7 @@ class ProductModel
 
     public function getProductsByCategory($category_id)
     {
-        $query = "SELECT p.id, p.name, p.description, p.price, p.image, c.name as category_name 
+        $query = "SELECT p.id, p.name, p.description, p.price, c.name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN category c ON p.category_id = c.id
                   WHERE p.category_id = :category_id";
@@ -49,7 +49,7 @@ class ProductModel
         return htmlspecialchars(strip_tags($value));
     }
 
-    public function addProduct($name, $description, $price, $category_id, $image)
+    public function addProduct($name, $description, $price, $category_id)
     {
         $errors = [];
         if (trim($name) === '') {
@@ -69,8 +69,8 @@ class ProductModel
             return $errors;
         }
 
-        $query = "INSERT INTO " . $this->table_name . " (name, description, price, image, category_id) 
-                  VALUES (:name, :description, :price, :image, :category_id)";
+        $query = "INSERT INTO " . $this->table_name . " (name, description, price, category_id) 
+                  VALUES (:name, :description, :price, :category_id)";
         $stmt = $this->conn->prepare($query);
 
         $name        = $this->sanitize($name);
@@ -79,7 +79,6 @@ class ProductModel
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':description', $description);
         $stmt->bindValue(':price', $price);
-        $stmt->bindValue(':image', $image);
         $stmt->bindValue(':category_id', $category_id);
 
         return $stmt->execute();
@@ -103,7 +102,7 @@ class ProductModel
         return $errors;
     }
 
-    public function updateProduct($id, $name, $description, $price, $category_id, $image)
+    public function updateProduct($id, $name, $description, $price, $category_id)
     {
         $errors = $this->validateProductInput($name, $description, $price, $category_id);
         if (!empty($errors)) {
@@ -114,14 +113,13 @@ class ProductModel
         $description = $this->sanitize($description);
 
         $query = "UPDATE " . $this->table_name . " 
-                  SET name = :name, description = :description, price = :price, image = :image, category_id = :category_id 
+                  SET name = :name, description = :description, price = :price, category_id = :category_id 
                   WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(':id', $id);
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':description', $description);
         $stmt->bindValue(':price', $price);
-        $stmt->bindValue(':image', $image);
         $stmt->bindValue(':category_id', $category_id);
         return $stmt->execute();
     }

@@ -11,7 +11,57 @@ $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
 $url = explode('/', $url);
 
-// Chuẩn hóa tên controller và action (không phân biệt hoa thường ở URL)
+// API Routing
+if (isset($url[0]) && $url[0] === 'api') {
+    header('Content-Type: application/json');
+
+    $resource = $url[1] ?? '';
+    $id = $url[2] ?? null;
+    $method = $_SERVER['REQUEST_METHOD'];
+
+    $apiControllers = [
+        'product' => 'ProductApiController',
+        'category' => 'CategoryApiController'
+    ];
+
+    $controllerClass = $apiControllers[$resource] ?? null;
+    if (!$controllerClass) {
+        http_response_code(404);
+        echo json_encode(['error' => 'API endpoint not found']);
+        exit;
+    }
+
+    require_once 'app/controllers/' . $controllerClass . '.php';
+    $controller = new $controllerClass();
+
+    switch ($resource) {
+        case 'product':
+            if ($method === 'GET') {
+                $id ? $controller->show($id) : $controller->index();
+            } elseif ($method === 'POST') {
+                $controller->create();
+            } elseif ($method === 'PUT') {
+                $controller->update($id);
+            } elseif ($method === 'DELETE') {
+                $controller->delete($id);
+            }
+            break;
+        case 'category':
+            if ($method === 'GET') {
+                $id ? $controller->show($id) : $controller->index();
+            } elseif ($method === 'POST') {
+                $controller->create();
+            } elseif ($method === 'PUT') {
+                $controller->update($id);
+            } elseif ($method === 'DELETE') {
+                $controller->delete($id);
+            }
+            break;
+    }
+    exit;
+}
+
+// Web Routing
 $routeController = isset($url[0]) && $url[0] != '' ? ucfirst(strtolower($url[0])) : 'Default';
 $controllerName = $routeController . 'Controller';
 $action = isset($url[1]) && $url[1] != '' ? strtolower($url[1]) : 'index';
