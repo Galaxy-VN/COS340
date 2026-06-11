@@ -31,6 +31,7 @@ if (isset($url[0]) && $url[0] === "api") {
     $apiControllers = [
         "product" => "ProductApiController",
         "category" => "CategoryApiController",
+        "account" => "AccountApiController",
     ];
 
     $controllerClass = $apiControllers[$resource] ?? null;
@@ -73,6 +74,14 @@ if (isset($url[0]) && $url[0] === "api") {
                 $controller->update($id);
             } elseif ($method === "DELETE") {
                 $controller->delete($id);
+            } else {
+                http_response_code(405);
+                echo json_encode(["error" => "Method not allowed"]);
+            }
+            break;
+        case "account":
+            if ($method === "POST") {
+                $controller->login();
             } else {
                 http_response_code(405);
                 echo json_encode(["error" => "Method not allowed"]);
