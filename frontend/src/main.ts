@@ -29,11 +29,17 @@ $('#mainTabs').on('click', '.nav-link', function () {
   if (tab === 'products') {
     $('#products-section').show()
     $('#categories-section').hide()
+    $('#docs-section').hide()
     loadProducts()
-  } else {
+  } else if (tab === 'categories') {
     $('#products-section').hide()
     $('#categories-section').show()
+    $('#docs-section').hide()
     loadCategories()
+  } else if (tab === 'docs') {
+    $('#products-section').hide()
+    $('#categories-section').hide()
+    $('#docs-section').show()
   }
 })
 
