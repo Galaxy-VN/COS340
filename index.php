@@ -61,6 +61,19 @@ if (isset($url[0]) && $url[0] === 'api') {
     exit;
 }
 
+// API Docs - serve swagger.json
+if (isset($url[0]) && $url[0] === 'api-docs') {
+    header('Content-Type: application/json');
+    $specFile = __DIR__ . '/frontend/public/swagger.json';
+    if (file_exists($specFile)) {
+        readfile($specFile);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Swagger spec not found']);
+    }
+    exit;
+}
+
 // Web Routing
 $routeController = isset($url[0]) && $url[0] != '' ? ucfirst(strtolower($url[0])) : 'Default';
 $controllerName = $routeController . 'Controller';
