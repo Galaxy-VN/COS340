@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
-const API = '/api'
+const API = 'http://localhost:88/phamgiahuy/api'
 let currentTab = 'products'
 let currentFormType = 'product' as 'product' | 'category'
 
