@@ -9,7 +9,7 @@ class ProductApiController
 
     public function __construct()
     {
-        $this->db = new Database()->getConnection();
+        $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
         header("Content-Type: application/json");
     }

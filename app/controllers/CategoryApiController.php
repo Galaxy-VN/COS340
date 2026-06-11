@@ -9,7 +9,7 @@ class CategoryApiController
 
     public function __construct()
     {
-        $this->db = new Database()->getConnection();
+        $this->db = (new Database())->getConnection();
         $this->categoryModel = new CategoryModel($this->db);
         header("Content-Type: application/json");
     }
