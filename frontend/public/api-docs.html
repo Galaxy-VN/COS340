@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COS340 API Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0b0f1a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #f8fafc;
+    }
+    .topbar-brand .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #f43f5e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+    .topbar-brand span {
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .topbar-actions a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .topbar-actions a:hover {
+      color: #f8fafc;
+      background: rgba(255,255,255,0.08);
+    }
+    .topbar-actions .btn-back {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .topbar-actions .btn-back:hover {
+      background: rgba(59, 130, 246, 0.25);
+      color: #bfdbfe;
+    }
+
+    /* Auth box */
+    .auth-box {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      backdrop-filter: blur(8px);
+    }
+    .auth-box label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .auth-box input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #f8fafc;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      width: 320px;
+      transition: border-color 0.2s;
+    }
+    .auth-box input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    .auth-box input.token-input {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+    }
+    .auth-box button {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .auth-box button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .auth-box .btn-clear {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .auth-box .btn-clear:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+    .auth-status {
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .auth-status.logged-in { color: #34d399; }
+    .auth-status.logged-out { color: #f87171; }
+
+    /* Swagger UI overrides */
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui { padding: 0 1rem 3rem; }
+    .swagger-ui .info { margin: 20px 0; }
+    .swagger-ui .info .title {
+      color: #f8fafc !important;
+      font-size: 1.8rem !important;
+      font-weight: 700 !important;
+    }
+    .swagger-ui .info .description,
+    .swagger-ui .info .version {
+      color: #94a3b8 !important;
+    }
+    .swagger-ui .scheme-container {
+      background: rgba(30, 41, 59, 0.5) !important;
+      box-shadow: none !important;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+    }
+    .swagger-ui .scheme-container .schemes > label {
+      color: #94a3b8;
+    }
+    .swagger-ui .opblock-tag {
+      color: #f8fafc !important;
+      border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+      font-size: 1.1rem;
+    }
+    .swagger-ui .opblock-tag small {
+      color: #94a3b8 !important;
+    }
+    .swagger-ui .opblock {
+      border-radius: 10px !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      background: rgba(15, 23, 42, 0.5) !important;
+      margin: 0.8rem 0;
+    }
+    .swagger-ui .opblock .opblock-summary-description {
+      color: #94a3b8;
+    }
+    .swagger-ui .opblock.opblock-get { border-left: 4px solid #3b82f6 !important; }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method { background: #3b82f6 !important; }
+    .swagger-ui .opblock.opblock-post { border-left: 4px solid #22c55e !important; }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method { background: #22c55e !important; }
+    .swagger-ui .opblock.opblock-put { border-left: 4px solid #f59e0b !important; }
+    .swagger-ui .opblock.opblock-put .opblock-summary-method { background: #f59e0b !important; }
+    .swagger-ui .opblock.opblock-delete { border-left: 4px solid #ef4444 !important; }
+    .swagger-ui .opblock.opblock-delete .opblock-summary-method { background: #ef4444 !important; }
+    .swagger-ui .opblock .opblock-summary-path,
+    .swagger-ui .opblock .opblock-summary-method {
+      color: #f8fafc !important;
+    }
+    .swagger-ui .opblock .opblock-summary-path a {
+      color: #f8fafc !important;
+    }
+    .swagger-ui .model-box {
+      background: rgba(30, 41, 59, 0.4) !important;
+      border-radius: 8px;
+    }
+    .swagger-ui .model-title {
+      color: #e2e8f0 !important;
+    }
+    .swagger-ui table thead tr th,
+    .swagger-ui table thead tr td,
+    .swagger-ui .parameter__name,
+    .swagger-ui .parameter__type,
+    .swagger-ui .response-col_status,
+    .swagger-ui .response-col_description {
+      color: #cbd5e1 !important;
+    }
+    .swagger-ui .response-col_description__inner p {
+      color: #94a3b8;
+    }
+    .swagger-ui .btn {
+      border-radius: 8px !important;
+    }
+    .swagger-ui .btn.execute {
+      background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+      border: none !important;
+      color: #fff !important;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      transition: all 0.2s;
+    }
+    .swagger-ui .btn.execute:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    }
+    .swagger-ui .btn.authorize {
+      color: #f59e0b !important;
+      border-color: rgba(245, 158, 11, 0.4) !important;
+    }
+    .swagger-ui input[type="text"],
+    .swagger-ui textarea,
+    .swagger-ui select {
+      background: rgba(15, 23, 42, 0.6) !important;
+      border: 1px solid rgba(255,255,255,0.15) !important;
+      color: #f8fafc !important;
+      border-radius: 8px !important;
+    }
+    .swagger-ui input[type="text"]:focus,
+    .swagger-ui textarea:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }
+    .swagger-ui .microlight {
+      background: rgba(15, 23, 42, 0.8) !important;
+      color: #e2e8f0 !important;
+      border-radius: 8px;
+    }
+    .swagger-ui .arrow {
+      border-color: #94a3b8 !important;
+    }
+
+    /* Footer */
+    .docs-footer {
+      text-align: center;
+      padding: 2rem;
+      color: #475569;
+      font-size: 0.82rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <a class="topbar-brand" href="/phamgiahuy/api-docs">
+      <div class="logo"><i class="fas fa-cubes"></i></div>
+      <span>COS340 API Docs</span>
+    </a>
+    <div class="topbar-actions">
+      <a href="/phamgiahuy/api/product" target="_blank"><i class="fas fa-external-link-alt me-1"></i>API Base</a>
+      <a href="http://localhost:3000" target="_blank" class="btn-back"><i class="fas fa-arrow-left me-1"></i>Frontend</a>
+    </div>
+  </div>
+
+  <!-- Auth box -->
+  <div class="auth-box">
+    <label><i class="fas fa-shield-halved me-1"></i>JWT Auth:</label>
+    <input type="text" id="auth-username" placeholder="Username" style="width:140px;" />
+    <input type="password" id="auth-password" placeholder="Password" style="width:140px;" />
+    <button id="btn-auth-login"><i class="fas fa-right-to-bracket me-1"></i>Login</button>
+    <input type="text" id="auth-token" class="token-input" placeholder="Token will appear here..." readonly style="flex:1; min-width:200px;" />
+    <button id="btn-auth-copy" class="btn-clear" title="Copy token"><i class="fas fa-copy"></i></button>
+    <button id="btn-auth-clear" class="btn-clear" title="Clear"><i class="fas fa-times"></i></button>
+    <span class="auth-status logged-out" id="auth-status"><i class="fas fa-circle-xmark"></i>Not logged in</span>
+  </div>
+
+  <!-- Swagger UI -->
+  <div id="swagger-container"></div>
+
+  <div class="docs-footer">
+    COS340 REST API &mdash; Built with Firebase PHP-JWT &amp; OpenAPI 3.0
+  </div>
+
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    // Swagger UI
+    SwaggerUIBundle({
+      url: '/phamgiahuy/swagger.json',
+      dom_id: '#swagger-container',
+      presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+      layout: 'BaseLayout',
+      deepLinking: true,
+      tryItOutEnabled: true,
+      docExpansion: 'list',
+      defaultModelsExpandDepth: 1,
+      defaultModelExpandDepth: 1,
+    });
+
+    // Auth functionality
+    const API = 'http://localhost:88/phamgiahuy/api';
+    const tokenInput = document.getElementById('auth-token');
+    const statusEl = document.getElementById('auth-status');
+
+    function setToken(token) {
+      tokenInput.value = token;
+      localStorage.setItem('jwt_token', token);
+      statusEl.className = 'auth-status logged-in';
+      statusEl.innerHTML = '<i class="fas fa-circle-check"></i>Logged in';
+    }
+
+    function clearToken() {
+      tokenInput.value = '';
+      localStorage.removeItem('jwt_token');
+      statusEl.className = 'auth-status logged-out';
+      statusEl.innerHTML = '<i class="fas fa-circle-xmark"></i>Not logged in';
+    }
+
+    // Restore saved token
+    const saved = localStorage.getItem('jwt_token');
+    if (saved) setToken(saved);
+
+    // Login
+    document.getElementById('btn-auth-login').addEventListener('click', async () => {
+      const username = document.getElementById('auth-username').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
+      if (!username || !password) return alert('Please enter username and password');
+
+      try {
+        const resp = await fetch(`${API}/account`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await resp.json();
+        if (!resp.ok) return alert(data.error || 'Login failed');
+        setToken(data.token);
+        document.getElementById('auth-username').value = '';
+        document.getElementById('auth-password').value = '';
+      } catch (e) {
+        alert('Connection error');
+      }
+    });
+
+    // Copy token
+    document.getElementById('btn-auth-copy').addEventListener('click', () => {
+      if (tokenInput.value) {
+        navigator.clipboard.writeText(tokenInput.value);
+        alert('Token copied!');
+      }
+    });
+
+    // Clear
+    document.getElementById('btn-auth-clear').addEventListener('click', clearToken);
+
+    // Enter key to login
+    document.getElementById('auth-password').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('btn-auth-login').click();
+    });
+  </script>
+</body>
+</html>

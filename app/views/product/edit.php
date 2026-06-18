@@ -1,5 +1,5 @@
 <?php $title = 'Chỉnh sửa sản phẩm'; ?>
-<?php $product = $product ?? (object) ['id' => '', 'name' => '', 'description' => '', 'category_id' => '', 'price' => '', 'image' => '']; ?>
+<?php $product = $product ?? (object) ['id' => '', 'name' => '', 'description' => '', 'category_id' => '', 'price' => '']; ?>
 <?php $categories = $categories ?? []; ?>
 <?php include 'app/views/layout/header.php'; ?>
 
@@ -10,7 +10,7 @@
             <span>Edit item</span>
         </div>
         <h1 class="h3 mb-2 fw-bold">Chỉnh sửa sản phẩm</h1>
-        <p class="lead mb-0">Điều chỉnh thông tin sản phẩm và cập nhật ảnh theo từng lần chỉnh sửa.</p>
+        <p class="lead mb-0">Điều chỉnh thông tin sản phẩm và cập nhật theo từng lần chỉnh sửa.</p>
     </div>
     <a href="/phamgiahuy/product" class="btn btn-light text-primary fw-semibold shadow-sm position-relative" style="z-index:1;">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
@@ -20,8 +20,13 @@
 <div class="row justify-content-center">
     <div class="col-lg-8 col-xl-7">
         <div class="surface-card p-3 p-lg-4">
-            <form action="/phamgiahuy/product/update" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?php echo $product->id; ?>">
+            <div id="errorAlert" class="alert alert-danger border-0 rounded-4" style="display:none;">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <ul id="errorList" class="mb-0 ps-3"></ul>
+            </div>
+
+            <form id="productForm">
+                <input type="hidden" name="id" id="productId" value="<?php echo $product->id; ?>">
 
                 <div class="field-card mb-3">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -60,32 +65,10 @@
                         <label for="price" class="form-label fw-semibold">Giá *</label>
                         <input type="number" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($product->price); ?>" step="0.01" min="0" required>
                     </div>
-
-                    <div class="col-md-12">
-                        <label class="form-label fw-semibold">Ảnh hiện tại</label>
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-4" style="background: rgba(237, 244, 250, 0.75); border: 1px solid rgba(17, 33, 55, 0.08);">
-                            <?php if (!empty($product->image) && file_exists('uploads/' . $product->image)): ?>
-                                <img src="/phamgiahuy/uploads/<?php echo htmlspecialchars($product->image); ?>" alt="Ảnh" class="img-thumbnail" width="96" height="96">
-                            <?php else: ?>
-                                <div class="bg-white d-flex align-items-center justify-content-center rounded-4 border" style="width: 96px; height: 96px;">
-                                    <i class="fas fa-image text-muted fa-lg"></i>
-                                </div>
-                            <?php endif; ?>
-                            <div>
-                                <div class="fw-semibold mb-1">Ảnh sản phẩm</div>
-                                <div class="text-muted small">Nếu không chọn ảnh mới, ảnh hiện tại sẽ được giữ nguyên.</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="image" class="form-label fw-semibold">Thay đổi ảnh</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                    </div>
                 </div>
 
                 <div class="mt-4 d-flex gap-2">
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-warning" id="submitBtn">
                         <i class="fas fa-save me-1"></i>Cập nhật
                     </button>
                     <a href="/phamgiahuy/product" class="btn btn-outline-secondary">Hủy</a>
@@ -94,5 +77,63 @@
         </div>
     </div>
 </div>
+
+<script>
+const API_BASE = '/phamgiahuy/api';
+const productId = document.getElementById('productId').value;
+
+document.getElementById('productForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorList = document.getElementById('errorList');
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang cập nhật...';
+    errorAlert.style.display = 'none';
+
+    const data = {
+        name: document.getElementById('name').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        price: parseFloat(document.getElementById('price').value) || 0,
+        category_id: parseInt(document.getElementById('category_id').value) || 0
+    };
+
+    try {
+        const resp = await fetch(`${API_BASE}/product/${productId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await resp.json();
+
+        if (resp.ok) {
+            window.location.href = '/phamgiahuy/product';
+        } else {
+            errorList.innerHTML = '';
+            if (result.errors) {
+                result.errors.forEach(err => {
+                    const li = document.createElement('li');
+                    li.textContent = err;
+                    errorList.appendChild(li);
+                });
+            } else if (result.error) {
+                const li = document.createElement('li');
+                li.textContent = result.error;
+                errorList.appendChild(li);
+            }
+            errorAlert.style.display = 'block';
+        }
+    } catch (e) {
+        errorList.innerHTML = '<li>Lỗi kết nối. Vui lòng thử lại.</li>';
+        errorAlert.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Cập nhật';
+    }
+});
+</script>
 
 <?php include 'app/views/layout/footer.php'; ?>
