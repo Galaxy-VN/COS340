@@ -19,6 +19,141 @@ interface Category {
   description: string
 }
 
+interface User {
+  id: number
+  username: string
+  fullname: string
+  role: string
+}
+
+// --- Auth ---
+function getToken(): string | null {
+  return localStorage.getItem('jwt_token')
+}
+
+function getUser(): User | null {
+  const raw = localStorage.getItem('jwt_user')
+  return raw ? JSON.parse(raw) : null
+}
+
+function saveAuth(token: string, user: User) {
+  localStorage.setItem('jwt_token', token)
+  localStorage.setItem('jwt_user', JSON.stringify(user))
+}
+
+function clearAuth() {
+  localStorage.removeItem('jwt_token')
+  localStorage.removeItem('jwt_user')
+}
+
+function isLoggedIn(): boolean {
+  return !!getToken()
+}
+
+function updateAuthUI() {
+  const user = getUser()
+  if (user) {
+    $('#auth-section').html(`
+      <span class="text-light me-2">
+        <i class="fas fa-user-circle me-1"></i>${escapeHtml(user.fullname)} (${escapeHtml(user.role)})
+      </span>
+      <button class="btn btn-sm btn-outline-light" id="btn-logout">
+        <i class="fas fa-right-from-bracket me-1"></i>Đăng xuất
+      </button>
+    `)
+  } else {
+    $('#auth-section').html(`
+      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <i class="fas fa-right-to-bracket me-1"></i>Đăng nhập
+      </button>
+    `)
+  }
+}
+
+$('#auth-section').on('click', '#btn-logout', () => {
+  clearAuth()
+  updateAuthUI()
+  showToast('success', 'Đăng xuất', 'Bạn đã đăng xuất thành công.')
+})
+
+// --- Login Modal ---
+$('#btn-login').on('click', async () => {
+  const username = ($('#login-username').val() as string).trim()
+  const password = ($('#login-password').val() as string).trim()
+
+  if (!username || !password) {
+    $('#login-error').text('Vui lòng nhập đầy đủ thông tin.').show()
+    return
+  }
+
+  try {
+    const resp = await fetch(`${API}/account`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    })
+
+    const data = await resp.json()
+
+    if (!resp.ok) {
+      $('#login-error').text(data.error || 'Đăng nhập thất bại.').show()
+      return
+    }
+
+    saveAuth(data.token, data.user);
+    (window as any).bootstrap.Modal.getInstance('#loginModal')?.hide()
+    $('#login-username').val('')
+    $('#login-password').val('')
+    $('#login-error').hide()
+    updateAuthUI()
+    showToast('success', 'Đăng nhập thành công', `Xin chào ${data.user.fullname}!`)
+  } catch {
+    $('#login-error').text('Lỗi kết nối.').show()
+  }
+})
+
+// --- Toast ---
+function showToast(type: 'success' | 'error' | 'info', title: string, message: string) {
+  const icons: Record<string, string> = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' }
+  const toast = $(`
+    <div class="toast align-items-center text-bg-${type === 'error' ? 'danger' : type} border-0 show" role="alert">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="fas ${icons[type] ?? icons.info} me-2"></i>
+          <strong>${escapeHtml(title)}</strong> ${escapeHtml(message)}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `)
+  $('#toast-container').append(toast)
+  setTimeout(() => toast.fadeOut(300, () => toast.remove()), 4000)
+}
+
+// --- Auth Fetch Wrapper ---
+async function authFetch(url: string, options: RequestInit = {}) {
+  const token = getToken()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...((options.headers as Record<string, string>) || {})
+  }
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+
+  const resp = await fetch(url, { ...options, headers })
+
+  if (resp.status === 401) {
+    showToast('error', 'Chưa đăng nhập', 'Vui lòng đăng nhập để thực hiện thao tác này.')
+    return null
+  }
+  if (resp.status === 403) {
+    showToast('error', 'Không có quyền', 'Bạn không có quyền thực hiện thao tác này.')
+    return null
+  }
+  return resp
+}
+
 // --- Tabs ---
 $('#mainTabs').on('click', '.nav-link', function () {
   const tab = $(this).data('tab') as string
@@ -29,17 +164,11 @@ $('#mainTabs').on('click', '.nav-link', function () {
   if (tab === 'products') {
     $('#products-section').show()
     $('#categories-section').hide()
-    $('#docs-section').hide()
     loadProducts()
   } else if (tab === 'categories') {
     $('#products-section').hide()
     $('#categories-section').show()
-    $('#docs-section').hide()
     loadCategories()
-  } else if (tab === 'docs') {
-    $('#products-section').hide()
-    $('#categories-section').hide()
-    $('#docs-section').show()
   }
 })
 
@@ -50,13 +179,17 @@ async function loadProducts() {
   $('#products-empty').hide()
 
   try {
-    const data: Product[] = await $.getJSON(`${API}/product`)
+    const resp = await fetch(`${API}/product`)
+    const data: Product[] = await resp.json()
     $('#products-loading').hide()
 
     if (!data.length) {
       $('#products-empty').show()
       return
     }
+
+    const user = getUser()
+    const isAdmin = user?.role === 'admin'
 
     const tbody = $('#products-tbody').empty()
     data.forEach(p => {
@@ -68,12 +201,14 @@ async function loadProducts() {
           <td>${formatPrice(p.price)}đ</td>
           <td>${escapeHtml(p.category_name || '-')}</td>
           <td>
-            <button class="btn btn-sm btn-outline-info me-1 edit-product" data-id="${p.id}" title="Sửa">
-              <i class="fas fa-pen"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger delete-product" data-id="${p.id}" title="Xóa">
-              <i class="fas fa-trash"></i>
-            </button>
+            ${isAdmin ? `
+              <button class="btn btn-sm btn-outline-info me-1 edit-product" data-id="${p.id}" title="Sửa">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger delete-product" data-id="${p.id}" title="Xóa">
+                <i class="fas fa-trash"></i>
+              </button>
+            ` : ''}
           </td>
         </tr>
       `)
@@ -89,15 +224,23 @@ $('#btn-add-product').on('click', () => openProductForm())
 
 $('#products-tbody').on('click', '.edit-product', async function () {
   const id = $(this).data('id')
-  const product: Product = await $.getJSON(`${API}/product/${id}`)
+  const resp = await fetch(`${API}/product/${id}`)
+  const product: Product = await resp.json()
   openProductForm(product)
 })
 
 $('#products-tbody').on('click', '.delete-product', async function () {
   const id = $(this).data('id')
   if (!confirm('Xóa sản phẩm này?')) return
-  await $.ajax({ url: `${API}/product/${id}`, method: 'DELETE' })
-  loadProducts()
+  const resp = await authFetch(`${API}/product/${id}`, { method: 'DELETE' })
+  if (!resp) return
+  const data = await resp.json()
+  if (resp.ok) {
+    showToast('success', 'Thành công', 'Sản phẩm đã được xóa.')
+    loadProducts()
+  } else {
+    showToast('error', 'Lỗi', data.error || 'Xóa sản phẩm thất bại.')
+  }
 })
 
 function openProductForm(product?: Product) {
@@ -132,7 +275,8 @@ function openProductForm(product?: Product) {
 }
 
 async function loadCategoryOptions(selectedId?: number) {
-  const categories: Category[] = await $.getJSON(`${API}/category`)
+  const resp = await fetch(`${API}/category`)
+  const categories: Category[] = await resp.json()
   const select = $('#field-category_id')
   select.find('option:gt(0)').remove()
   categories.forEach(c => {
@@ -148,13 +292,17 @@ async function loadCategories() {
   $('#categories-empty').hide()
 
   try {
-    const data: Category[] = await $.getJSON(`${API}/category`)
+    const resp = await fetch(`${API}/category`)
+    const data: Category[] = await resp.json()
     $('#categories-loading').hide()
 
     if (!data.length) {
       $('#categories-empty').show()
       return
     }
+
+    const user = getUser()
+    const isAdmin = user?.role === 'admin'
 
     const tbody = $('#categories-tbody').empty()
     data.forEach(c => {
@@ -164,12 +312,14 @@ async function loadCategories() {
           <td>${escapeHtml(c.name)}</td>
           <td>${escapeHtml(truncate(c.description, 60))}</td>
           <td>
-            <button class="btn btn-sm btn-outline-info me-1 edit-category" data-id="${c.id}" title="Sửa">
-              <i class="fas fa-pen"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger delete-category" data-id="${c.id}" title="Xóa">
-              <i class="fas fa-trash"></i>
-            </button>
+            ${isAdmin ? `
+              <button class="btn btn-sm btn-outline-info me-1 edit-category" data-id="${c.id}" title="Sửa">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger delete-category" data-id="${c.id}" title="Xóa">
+                <i class="fas fa-trash"></i>
+              </button>
+            ` : ''}
           </td>
         </tr>
       `)
@@ -185,15 +335,23 @@ $('#btn-add-category').on('click', () => openCategoryForm())
 
 $('#categories-tbody').on('click', '.edit-category', async function () {
   const id = $(this).data('id')
-  const category: Category = await $.getJSON(`${API}/category/${id}`)
+  const resp = await fetch(`${API}/category/${id}`)
+  const category: Category = await resp.json()
   openCategoryForm(category)
 })
 
 $('#categories-tbody').on('click', '.delete-category', async function () {
   const id = $(this).data('id')
   if (!confirm('Xóa danh mục này?')) return
-  await $.ajax({ url: `${API}/category/${id}`, method: 'DELETE' })
-  loadCategories()
+  const resp = await authFetch(`${API}/category/${id}`, { method: 'DELETE' })
+  if (!resp) return
+  const data = await resp.json()
+  if (resp.ok) {
+    showToast('success', 'Thành công', 'Danh mục đã được xóa.')
+    loadCategories()
+  } else {
+    showToast('error', 'Lỗi', data.error || 'Xóa danh mục thất bại.')
+  }
 })
 
 function openCategoryForm(category?: Category) {
@@ -232,24 +390,22 @@ $('#btn-save').on('click', async () => {
     body.category_id = parseInt($('#field-category_id').val() as string) || 0
   }
 
-  try {
-    const resp = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
+  const resp = await authFetch(url, {
+    method,
+    body: JSON.stringify(body)
+  })
 
-    const result = await resp.json()
+  if (!resp) return
 
-    if (resp.ok) {
-      ;(window as any).bootstrap.Modal.getInstance('#formModal')?.hide()
-      currentTab === 'products' ? loadProducts() : loadCategories()
-    } else {
-      const msgs = result.errors?.join('<br>') ?? result.error ?? 'Lỗi không xác định'
-      $('#modal-errors').html(msgs).show()
-    }
-  } catch {
-    $('#modal-errors').html('Lỗi kết nối.').show()
+  const result = await resp.json()
+
+  if (resp.ok) {
+    ;(window as any).bootstrap.Modal.getInstance('#formModal')?.hide()
+    showToast('success', 'Thành công', isEdit ? 'Cập nhật thành công.' : 'Tạo mới thành công.')
+    currentTab === 'products' ? loadProducts() : loadCategories()
+  } else {
+    const msgs = result.errors?.join('<br>') ?? result.error ?? 'Lỗi không xác định'
+    $('#modal-errors').html(msgs).show()
   }
 })
 
@@ -275,4 +431,5 @@ function formatPrice(price: number): string {
 }
 
 // --- Init ---
+updateAuthUI()
 loadProducts()

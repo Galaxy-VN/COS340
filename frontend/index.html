@@ -5,18 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quản lý Sản phẩm</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
-  <style>
-    .swagger-ui .topbar { display: none; }
-    .swagger-ui .info .title { color: var(--bs-body-color) !important; }
-    .swagger-ui .scheme-container { background: transparent; box-shadow: none; }
-    .swagger-ui .opblock.opblock-get { border-color: #0d6efd; }
-    .swagger-ui .opblock.opblock-post { border-color: #198754; }
-    .swagger-ui .opblock.opblock-put { border-color: #ffc107; }
-    .swagger-ui .opblock.opblock-delete { border-color: #dc3545; }
-    #swagger-container { min-height: 600px; }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body class="bg-dark text-light">
   <nav class="navbar navbar-expand-lg navbar-dark bg-black bg-opacity-50 border-bottom border-secondary">
@@ -24,6 +13,11 @@
       <a class="navbar-brand fw-bold" href="#">
         <i class="fas fa-cubes me-2"></i>COS340 Shop
       </a>
+      <div class="d-flex align-items-center gap-2" id="auth-section">
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="fas fa-right-to-bracket me-1"></i>Đăng nhập
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -36,10 +30,10 @@
       <li class="nav-item">
         <button class="nav-link" data-tab="categories">Danh mục</button>
       </li>
-      <li class="nav-item">
-        <button class="nav-link" data-tab="docs">
+      <li class="nav-item ms-auto">
+        <a href="/phamgiahuy/api-docs" target="_blank" class="btn btn-sm btn-outline-light">
           <i class="fas fa-book me-1"></i>API Docs
-        </button>
+        </a>
       </li>
     </ul>
 
@@ -99,10 +93,7 @@
       <div id="categories-empty" class="text-center text-muted py-4" style="display:none;">Chưa có danh mục nào.</div>
     </section>
 
-    <!-- API Docs Section -->
-    <section id="docs-section" style="display:none;">
-      <div id="swagger-container"></div>
-    </section>
+    <!-- API Docs Section - now at /phamgiahuy/api-docs -->
   </div>
 
   <!-- Modal -->
@@ -130,26 +121,39 @@
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark border-secondary">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title"><i class="fas fa-right-to-bracket me-2"></i>Đăng nhập</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="login-error" class="alert alert-danger" style="display:none;"></div>
+          <div class="mb-3">
+            <label class="form-label">Tên tài khoản</label>
+            <input type="text" class="form-control" id="login-username" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" class="form-control" id="login-password" />
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" id="btn-login">
+            <i class="fas fa-right-to-bracket me-1"></i>Đăng nhập
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
-  <script>
-    let swaggerLoaded = false;
-    document.querySelectorAll('#mainTabs .nav-link').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.dataset.tab === 'docs' && !swaggerLoaded) {
-          swaggerLoaded = true;
-          SwaggerUIBundle({
-            url: '/swagger.json',
-            dom_id: '#swagger-container',
-            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
-            layout: 'BaseLayout',
-            deepLinking: true,
-            tryItOutEnabled: true
-          });
-        }
-      });
-    });
-  </script>
 </body>
 </html>
