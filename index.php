@@ -91,16 +91,16 @@ if (isset($url[0]) && $url[0] === "api") {
     exit();
 }
 
-// API Docs - serve swagger.json
+// API Docs - serve Swagger UI page
 if (isset($url[0]) && $url[0] === "api-docs") {
+    readfile(__DIR__ . "/frontend/public/api-docs.html");
+    exit();
+}
+
+// API Docs JSON
+if (isset($url[0]) && $url[0] === "swagger.json") {
     header("Content-Type: application/json");
-    $specFile = __DIR__ . "/frontend/public/swagger.json";
-    if (file_exists($specFile)) {
-        readfile($specFile);
-    } else {
-        http_response_code(404);
-        echo json_encode(["error" => "Swagger spec not found"]);
-    }
+    readfile(__DIR__ . "/frontend/public/swagger.json");
     exit();
 }
 

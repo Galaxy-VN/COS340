@@ -12,6 +12,69 @@
     }
   ],
   "paths": {
+    "/api/account": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Đăng nhập - lấy JWT token",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": { "type": "string", "example": "admin" },
+                  "password": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đăng nhập thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Login successful" },
+                    "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiJ9..." },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer" },
+                        "username": { "type": "string" },
+                        "fullname": { "type": "string" },
+                        "role": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sai tài khoản hoặc mật khẩu",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "422": {
+            "description": "Thiếu username hoặc password",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/product": {
       "get": {
         "tags": ["Product"],
@@ -35,6 +98,7 @@
         "tags": ["Product"],
         "summary": "Tạo sản phẩm mới",
         "operationId": "createProduct",
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -99,6 +163,7 @@
         "tags": ["Product"],
         "summary": "Cập nhật sản phẩm",
         "operationId": "updateProduct",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "$ref": "#/components/parameters/ProductId" }
         ],
@@ -146,6 +211,7 @@
         "tags": ["Product"],
         "summary": "Xóa sản phẩm",
         "operationId": "deleteProduct",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "$ref": "#/components/parameters/ProductId" }
         ],
@@ -197,6 +263,7 @@
         "tags": ["Category"],
         "summary": "Tạo danh mục mới",
         "operationId": "createCategory",
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -261,6 +328,7 @@
         "tags": ["Category"],
         "summary": "Cập nhật danh mục",
         "operationId": "updateCategory",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "$ref": "#/components/parameters/CategoryId" }
         ],
@@ -308,6 +376,7 @@
         "tags": ["Category"],
         "summary": "Xóa danh mục",
         "operationId": "deleteCategory",
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           { "$ref": "#/components/parameters/CategoryId" }
         ],
@@ -338,6 +407,14 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Paste the JWT token from login"
+      }
+    },
     "parameters": {
       "ProductId": {
         "name": "id",
